@@ -1,0 +1,22 @@
+{% from 'macros.html' import render_head_area, render_pagination %}
+{% from 'admin/macros.html' import render_post_list%}
+
+{% extends "base.html" %}
+{% block title %}博客列表{% endblock %}
+
+
+{% block jumbotron %}
+{{ render_head_area(admin, '', url_for('static', filename='img/logo.png')) }}
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <h3>文章列表</h3>
+        {% if pagination.items | length == 0 %}
+            <h4>没有文章</h4>
+        {% else %}
+            {{ render_post_list(pagination.items, moment) }}
+            {{ render_pagination(pagination, endpoint) }}
+        {% endif %}
+</div>
+{% endblock %}

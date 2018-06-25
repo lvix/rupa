@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination, render_index_post_list, render_head_area %}
+{% block title %}{{ tag.name }} - 65535.me{% endblock %}
+
+{% block jumbotron %}
+{{ render_head_area('分类：' + tag.name, '', '') }}
+{% endblock %}
+
+{% block body%}
+{{ render_index_post_list(pagination.items, moment) }}
+{{ render_pagination(pagination, endpoint, tag_id=tag_id) }}
+{% endblock %}

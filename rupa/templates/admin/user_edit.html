@@ -1,0 +1,33 @@
+{% from 'macros.html' import render_head_area, render_pagination, render_form %}
+{% from 'admin/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}用户信息{% endblock %}
+
+
+{% block jumbotron %}
+{{ render_head_area(admin, '', url_for('static', filename='img/logo.png')) }}
+{% endblock %}
+
+{% block body%}
+
+<div class="form-group">
+    <label>用户名</label>
+    <input class="form-control" id="username_false" value="{{ user.username }}" type="text" disabled>
+</div>
+
+<div class="form-group">
+    <label>email</label>
+    <input class="form-control" id="email_false" value="{{ user.email }}" type="text" disabled>
+</div>
+
+<form method="POST" action="{{ url }}" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ render_general_field(form.nickname) }}
+    {{ render_general_field(form.role) }}
+    {{ render_general_field(form.status) }}
+    {{ render_general_field(form.introduction) }}
+    {{ render_general_field(form.password) }}
+    {{ form.submit(class='btn btn-primary', type='submit') }}
+</form>
+{% endblock %}

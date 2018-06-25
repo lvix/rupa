@@ -1,0 +1,115 @@
+{% macro md_renderer() %}
+{#
+渲染 markdown 所需要的js
+#}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+    var rendererMD = new marked.Renderer();
+    marked.setOptions({
+        renderer: rendererMD,
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false
+    });
+    // 重写 code 的输出
+    rendererMD.code = function(code, language){
+        return '<pre><code class="hljs ' + language + '">' +
+        hljs.highlight(language, code).value +
+        '</code></pre>';
+    };
+    // 重写 table 的输出
+    rendererMD.table = function(header, body) {
+        if (body) body = '<tbody>' + body + '</tbody>';
+
+        return '<table class="table table-hover">\n'
+            + '<thead>\n'
+            + header
+            + '</thead>\n'
+            + body
+            + '</table>\n';
+    };
+    // 重写 tablecell 的输出
+    rendererMD.tablecell = function(content, flags) {
+    var type = flags.header ? 'th' : 'td';
+    var type_left = flags.header ? 'th scope="col" ' : 'td scope="row" ';
+    var tag = flags.align
+        ? '<' + type_left + ' align="' + flags.align + '">'
+        : '<' + type_left + '>';
+      return tag + content + '</' + type + '>\n';
+    };
+
+    rendererMD.blockquote = function(quote) {
+        return '<blockquote class="blockquote">\n' + quote + '</blockquote>\n';
+    };
+
+    rendererMD.html = function(html) {
+        return html2Escape(html);
+    };
+
+
+    // HTML标签转义（< -> &lt;）
+    function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g,function(c){
+            return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];
+        });
+    }
+
+
+    // HTML标签反转义（&lt; -> <）
+    function escape2Html(str) {
+        var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"', '#34':'"', '#39':'\''};
+            return str.replace(/&(lt|gt|nbsp|amp|quot|#34|#39);/ig,function(all,t){
+                return arrEntities[t];
+        });
+    }
+</script>
+{% endmacro %}
+
+{% macro md_renderer_edit(preview_selector='#text_preview', editor_selector='#text') %}
+{#
+:param preview_selector: 预览 div 的 css选择器
+:param editor_selctor: 编辑器(text_area) 的 css选择器
+#}
+<script>
+    // 初次加载时渲染一次
+    $("{{ preview_selector }}").html(marked($("{{ editor_selector }}").val()))
+
+    // 监听事件
+    $("{{ editor_selector }}").on("keyup blur",function () {
+        $("{{ preview_selector }}").html(marked($("{{ editor_selector }}").val()))
+    })
+
+    // 拦截tab键
+    var el = document.querySelector("{{ editor_selector }}");
+    el.addEventListener("keydown", function(e){
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 9) {
+            var start = el.selectionStart,
+                end = el.selectionEnd;
+
+            el.value = el.value.substring(0, start)
+                    + "    "
+                    + el.value.substring(end);
+
+            el.selectionStart = el.selectionEnd = start + 4;
+
+            e.preventDefault();
+        }
+    })
+
+</script>
+{% endmacro %}
+
+{% macro md_render_content(preview_selector, content) %}
+<script>
+    // 渲染内容
+    $("{{ preview_selector }}").html(marked(escape2Html(`{{ content | js_raw_escape }}`)))
+
+</script>
+{% endmacro %}

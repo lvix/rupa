@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_post_info, render_head_area %}
+{% from 'sidebar_macros.html' import render_recent_posts, render_blog_categories%}
+{% block title %}{{ post.title }} - 65535.me{% endblock %}
+
+{% block jumbotron %}
+{% set blog=post.blog %}
+{{ render_head_area(blog.title, blog.description, blog.user.icon.url) }}
+{% endblock %}
+
+
+{% block main_content%}
+<div class="">
+    <h1>{{ post.title }}</h1>
+    <div class="post_text my-5" id="post_body">
+    </div>
+    {{ render_post_info(post, moment) }}
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+{{ render_recent_posts(post.blog) }}
+{{ render_blog_categories(post.blog) }}
+{% endblock %}
+
+{% block tail_js %}
+{{ super() }}
+{% from 'md_macros.html' import md_renderer, md_render_content %}
+{{ md_renderer() }}
+{{ md_render_content('.post_text', post.text) }}
+{% endblock %}

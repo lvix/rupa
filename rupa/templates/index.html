@@ -1,0 +1,22 @@
+{% from 'macros.html' import render_index_post_list, render_pagination, render_head_area, render_form %}
+{% from 'sidebar_macros.html' import render_recent_users, render_recent_posts %}
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+
+{% block collapse_content %}
+
+{% endblock %}
+
+{% block jumbotron %}
+{% include 'jumbotron.html' %}
+{% endblock %}
+
+{% block main_content%}
+    {{ render_index_post_list(pagination.items, moment) }}
+    {{ render_pagination(pagination, endpoint) }}
+{% endblock %}
+
+{% block sidebar %}
+    {{ render_recent_users() }}
+    {{ render_recent_posts() }}
+{% endblock %}

@@ -1,0 +1,50 @@
+{% from 'macros.html' import render_head_area, render_pagination %}
+{% from 'table_macros.html' import wrap_item %}
+{% from 'admin/macros.html' import render_post_list, render_user_list %}
+
+{% extends "base.html" %}
+{% block title %}管理中心{% endblock %}
+
+
+{% block jumbotron %}
+{{ render_head_area(admin, '', url_for('static', filename='img/logo.png')) }}
+{% endblock %}
+
+
+
+{% block body%}
+<div class="card">
+    <h5 class="card-header">最新文章</h5>
+    <div class="card-body">
+            {% if recent_posts | length == 0 %}
+                <h4>没有文章</h4>
+            {% else %}
+                {{ render_post_list(recent_posts, moment) }}
+            {% endif %}
+            <div class="row">
+                <div class="col-10"></div>
+                <div class="col-2">{{ wrap_item('查看全部', url_for('admin.post_list'), 'info', None) }}</div>
+            </div>
+    </div>
+</div>
+
+<div class="card">
+    <h5 class="card-header">最新用户</h5>
+    <div class="card-body">
+        {% if recent_users | length == 0 %}
+            <h4>没有用户</h4>
+        {% else %}
+            {{ render_user_list(recent_users, moment) }}
+        {% endif %}
+        <div class="row">
+            <div class="col-8"></div>
+            <div class="col-2">
+                {{ wrap_item('全部博客', url_for('admin.blog_list'), 'info', None) }}
+            </div>
+            <div class="col-2">
+                {{ wrap_item('全部用户', url_for('admin.user_list'), 'primary', None) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

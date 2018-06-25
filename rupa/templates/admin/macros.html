@@ -1,0 +1,74 @@
+{% macro render_general_field(field) %}
+{# 用于 admin/useredit.html 中的表格渲染 #}
+<div class="form-group">
+    {{ field.label }}
+    {{ field(class='form-control', **kwargs) }}
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <span class="help-block">{{ error }}</span>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+
+{% from 'table_macros.html' import render_data_table, table_item_wrapper %}
+
+{% macro render_blog_list(blog_items) %}
+{#
+    :param blog_items: 博客对象
+#}
+    {% call(item) render_data_table(blog_items, col_titles = ['id', '标题', '用户名', '昵称', '状态', '操作']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.id) }}
+        {{ table_item_wrapper(item.title | long_string_cutter(24), url_for('blog.blog_page', blog_id=item.id)) }}
+        {{ table_item_wrapper(item.user.username, url_for('admin.user_edit', user_id=item.user.id)) }}
+        {{ table_item_wrapper(item.user.nickname | long_string_cutter(24)) }}
+        {% if item.status == item.STATUS_NORMAL %}
+        {{ table_item_wrapper('正常', url_for('admin.blog_change_status', blog_id=item.id), 'info') }}
+        {% else %}
+        {{ table_item_wrapper('封禁', url_for('admin.blog_change_status', blog_id=item.id), 'dark') }}
+        {% endif %}
+        {{ table_item_wrapper('删除', url_for('admin.blog_delete', blog_id=item.id), 'danger') }}
+    {% endcall %}
+{% endmacro %}
+
+
+{% macro render_post_list(post_items, moment) %}
+{#
+    :param post_items: 文章数据库对象
+#}
+    {% call(item) render_data_table(post_items, col_titles = ['id', '标题', '用户名', '创建时间', '发表时间', '状态', '操作']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.id) }}
+        {{ table_item_wrapper(item.title | long_string_cutter(24), item.get_link) }}
+        {{ table_item_wrapper(item.blog.user.username, url_for('admin.user_edit', user_id=item.blog.user.id)) }}
+        {{ table_item_wrapper(moment(item.created_at).format('YYYY-M-D h:mm:ss')) }}
+        {{ table_item_wrapper(moment(item.published_at).format('YYYY-M-D h:mm:ss')) }}
+        {% if item.status == item.STATUS_PUBLISHED %}
+            {{ table_item_wrapper('已发表', url_for('admin.post_change_status', post_id=item.id), 'info') }}
+        {% elif item.status == item.STATUS_SUSPENDED %}
+            {{ table_item_wrapper('封禁', url_for('admin.post_change_status', post_id=item.id), 'dark') }}
+        {% elif item.status == item.STATUS_DRAFT %}
+            {{ table_item_wrapper('草稿', None, 'secondary') }}
+        {% endif %}
+        {{ table_item_wrapper('删除', url_for('admin.post_delete', post_id=item.id), 'danger') }}
+    {% endcall %}
+{% endmacro %}
+
+
+{% macro render_user_list(user_items, moment) %}
+{#
+    :param user_items: 用户数据库对象
+#}
+    {% call(item) render_data_table(user_items, col_titles = ['id', '用户名', '昵称', '邮件', '注册时间', '操作', '']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.id) }}
+        {{ table_item_wrapper(item.username) }}
+        {{ table_item_wrapper(item.nickname | long_string_cutter(24)) }}
+        {{ table_item_wrapper(item.email) }}
+        {{ table_item_wrapper(moment(item.created_at).format('YYYY-M-D h:mm:ss')) }}
+        {{ table_item_wrapper('编辑', url_for('admin.user_edit', user_id=item.id), 'info') }}
+        {{ table_item_wrapper('删除', url_for('admin.user_delete', user_id=item.id), 'danger') }}
+    {% endcall %}
+{% endmacro %}

@@ -1,0 +1,21 @@
+
+{% from 'macros.html' import render_index_post_list, render_pagination, render_head_area, render_form %}
+{% from 'table_macros.html' import wrap_item %}
+{% extends "base.html" %}
+{% block title %}登录{% endblock %}
+
+{% block jumbotron %}
+{% include 'jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+<div class="form_generic">
+{{ render_form(form, url_for('front.login'), submit_button_style='btn-block') }}
+
+{{ wrap_item('注册', url=url_for('front.register'), button_style='secondary', button_size='block') }}
+
+</div>
+
+
+{% endblock %}
+

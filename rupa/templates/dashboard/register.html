@@ -1,0 +1,12 @@
+
+{% from 'macros.html' import render_index_post_list, render_pagination, render_head_area, render_form %}
+{% extends "base.html" %}
+{% block title %}用户注册{% endblock %}
+
+{% block jumbotron %}
+{{ render_head_area('Lvix Blog', '还在建设中', None, 'V') }}
+{% endblock %}
+
+{% block body%}
+{{ render_form(form, url_for('front.register')) }}
+{% endblock %}

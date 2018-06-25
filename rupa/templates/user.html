@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination, render_index_post_list, render_head_area %}
+{% from 'sidebar_macros.html' import render_user_info %}
+{% block title %}{{ user.nickname }} - 65535.me{% endblock %}
+
+{% block jumbotron %}
+{{ render_head_area(user.nickname, user.introduction, user.icon.url) }}
+{% endblock %}
+
+{% block main_content %}
+{% if pagination %}
+    {{ render_index_post_list(pagination.items, moment) }}
+    {{ render_pagination(pagination, endpoint, user_id=user_id) }}
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    {{ render_user_info(user) }}
+{% endblock %}

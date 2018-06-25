@@ -1,0 +1,21 @@
+{% from 'macros.html' import render_head_area, render_pagination %}
+{% from 'dashboard/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}分类修改{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+<div class="form_generic">
+<form method="POST" action="{{ url_for('dashboard.category_edit', cate_id=cate_id) }}" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+
+{{ render_general_field(form.name) }}
+{{ form.submit() }}
+</form>
+</div>
+{% endblock %}

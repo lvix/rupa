@@ -1,0 +1,293 @@
+{%- macro render_nav() %}
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="false">Dropdown</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+{% endmacro %}
+
+{%- macro render_index_post_list(post_list, moment) %}
+{% for i in range(0, post_list | length) %}
+
+{{ render_post_card_2(post_list[i], moment) }}
+
+{% endfor %}
+{%- endmacro %}
+
+{% macro render_post_card(post, moment) %}
+<div class="card my-4" style="overflow:hidden;">
+    <div style="width:100%;height:100%;background-image:url({{ post.intro_photo.url }});background-repeat:no-repeat;background-position:center center;">
+
+    </div>
+    <div class="card-body" style="height:240px;overflow:hidden;">
+        <a href="{{ url_for('post.post_page', post_id=post.id) }}">
+            <h4 class="card-title">{{ post.title }}</h4>
+        </a>
+        <p class="card-text">{{ post.abstract | long_string_cutter(250) }}</p>
+    </div>
+    <div class="card-footer">
+        <img src="{{ post.blog.user.icon.url }}" class="rounded float-left post_card_icon align-self-center"
+             alt="{{ post.blog.user.nickname }}">
+        <strong>{{ post.blog.user.nickname}}</strong>
+        <span>{{ moment(post.published_at).format('YYYY-M-D') }}</span>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_post_card_2(post, moment) %}
+<div class="shadow mb-5 bg-white" style="height:320px;overflow:hidden;">
+    <div class="d-flex" style="width:100%;height:100%;">
+        <div class="row no-gutters w-100 pl-4 pt-4" style="height:100%">
+            <div class="col-12 align-items-start" style="overflow:hidden;height:15%;">
+                <h2 class="card-title">
+                    <a class="teal-link" href="{{ url_for('post.post_page', post_id=post.id) }}">{{ post.title }}</a>
+                </h2>
+            </div>
+
+            <div class="col-12 d-flex flex-row" style="overflow:hidden;height:15%;">
+                <div class="p-2"><img src="{{ post.blog.user.icon.url }}" class="rounded float-left post_card_icon"
+                                      alt="{{ post.blog.user.nickname }}"></div>
+                <div class="p-2"><strong>{{ post.blog.user.nickname}}</strong></div>
+                <div class="p-2"><strong>{{ moment(post.published_at).format('YYYY-M-D') }}</strong></div>
+            </div>
+
+            <div class="col-12 pr-4" style="overflow:hidden;height:55%">
+                <p class="card-text">{{ post.abstract | long_string_cutter(140) }}</p>
+            </div>
+
+            <div class="col-12 align-items-end" style="overflow:hidden;height:15%;">
+                <div class="d-flex flex-column-reverse">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            tags:
+                        </li>
+                        {% for i in range([post.tags | length, 5] | min) %}
+                        {% set tag = post.tags[i] %}
+                        <li class="list-inline-item bg-teal-500 px-1">
+                            <a class="text-white" href="{{ url_for('tag.tag_page', tag_id=tag.id) }}">
+                                {{ tag.name }}
+                            </a>
+                            {% set i = i + 1%}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% if post.intro_photo %}
+        <div class="flex-shrink-0"
+             style="width:240px;height:320px;margin:0px;background-image:url({{ post.intro_photo.url }});background-repeat:no-repeat;background-position:center center;"></div>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{%- macro render_pagination_old(pagination, endpoint) %}
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{%- if pagination.has_prev %}
+            {{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}
+            {% else %}#{% endif -%}
+            " aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+
+        {% for p in pagination.iter_pages() %}
+        {% if p %}
+        {% if p == pagination.page %}
+        <li class="page-item active">
+            <a class="page-link" href="{{ url_for(endpoint, page=p, **kwargs) }}">
+                {{ p }}</a>
+            <span class="sr-only">(current)</span>
+        </li>
+        {% elif pagination.page -3 <= p and p <= pagination.page +3 %}
+        <li class="page-item"><a class="page-link" href="{{ url_for(endpoint, page=p, **kwargs) }}">{{ p }}</a></li>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{%- if pagination.has_next %}
+            {{ url_for(endpoint, page=pagination.page + 1, **kwargs) }}
+            {% else %}#{% endif -%}
+
+            " aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endmacro %}
+{%- macro render_pagination(pagination, endpoint) %}
+<div class="btn-group" role="group" aria-label="Basic example">
+    <button class="btn btn-secondary {% if not pagination.has_prev %}disabled{% endif %}">
+        <a {%- if pagination.has_prev %}
+           href="{{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}"
+           {% endif %}
+           aria-label="Previous" class="text-light">
+            &laquo;
+        </a>
+    </button>
+    {% for p in pagination.iter_pages() %}
+
+    {% if p == pagination.page %}
+    <button type="button" class="btn btn-secondary">
+        <a class="text-light"><strong>{{ p }}</strong></a>
+    </button>
+    {% else %}
+    <button type="button" class="btn btn-secondary">
+        <a class="text-light" href="{{ url_for(endpoint, page=p, **kwargs) }}">{{ p }}</a>
+    </button>
+    {% endif %}
+
+    {% endfor %}
+
+    <button class="btn btn-secondary {% if not pagination.has_next %}disabled{% endif %}">
+        <a {%- if pagination.has_next %}
+           href="{{ url_for(endpoint, page=pagination.page + 1, **kwargs) }}"
+            {% endif -%}
+           aria-label="Next" class="text-light">&raquo;</a>
+    </button>
+</div>
+{%- endmacro %}
+
+{%- macro render_post_info(p, moment) %}
+
+<div class="mt-3"><strong>作者：</strong>
+    <a href="{{ url_for('user.user_page', user_id=p.blog.user.id) }}">
+        <button type="button" class="btn btn-outline-primary btn-sm">{{p.blog.user.nickname}}</button>
+    </a>
+    {%- for w in p.assist_writers %}
+    <a href="{{ url_for('user.user_page', user_id=w.id) }}">
+        <button type="button" class="btn btn-outline-primary btn-sm">{{w.nickname}}</button>
+    </a>
+    {%- endfor %}
+</div>
+<div class="mt-3"><strong>分类：</strong>
+    {%- for c in p.categories %}
+    <a href="{{ url_for('category.category_page', category_id=c.id) }}">
+        <button type="button" class="btn btn-outline-info btn-sm">{{ c.name }}</button>
+    </a>
+    {%- endfor %}
+</div>
+<div class="mt-3"><strong>标签：</strong>
+    {%- for t in p.tags %}
+    <a href="{{ url_for('tag.tag_page', tag_id=t.id) }}">
+        <button type="button" class="btn btn-outline-success btn-sm">{{ t.name }}</button>
+    </a>
+    {%- endfor %}
+</div>
+<div class="mt-3"><strong>发表于：</strong>
+    {{ moment(p.published_at).format('YYYY-M-D') }}
+</div>
+{%- endmacro %}
+
+{%- macro render_head_area(title, description, icon) %}
+<div class="py-5 mt-5 text-center">
+    {% set head_string = ['65535', '0xFFFF', '2^16-1'] | random %}
+    <span class="text-monospace mx-auto my-6 py-6" style="font-size:90px;">
+        <a href="/" class="teal-link">{{ head_string }}</a></span>
+
+    <h3>{% if icon %}
+    {# <img class="d-block mx-auto my-6 py-6 post_card_icon" src="{{ icon }}" alt=""> #}
+    {% endif %}{{ title }}</h3>
+
+    {%- if description %}
+    <p class="lead">{{ description }}</p>
+    {%- endif %}
+</div>
+{% endmacro %}
+
+{% macro render_form(form, url, file_accept="image/png,image/bmp,image/jpeg", submit_button_style='') %}
+<form method="POST" action="{{ url }}" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+
+    {% for field in form %}
+
+    {% if field.type == 'CSRFTokenField' %}
+    {{ '' }}
+    {% elif field.type == 'SubmitField' %}
+    <div class="form-group">
+        {{ form.submit(class_="btn btn-primary " + submit_button_style, type='submit') }}
+    </div>
+    {% elif field.type == 'BooleanField' %}
+    <div class="form-group form-check">
+        {{ field() }}
+        <label class="form-check-label">{{ field.label.text }}</label>
+    </div>
+    {% elif field.type == 'FileField' %}
+    <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field(class_='form-control-file', accept=file_accept) }}
+    </div>
+    {% elif field.type == 'DateField' %}
+    {# 日期模块还没修改 #}
+    <div class="form-group">
+        {{ field.label }}
+        <div class='input-group date' id='datetimepicker'>
+            {{ field(class_='form-control') }}
+            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+        </div>
+    </div>
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+    {% endif %}
+    {% else %}
+    <div class="form-group">
+        {{ field(class_='form-control', placeholder=field.label.text) }}
+    </div>
+    {% if field.label.text == '验证码' %}
+    <div class="form-group">
+        <img src="{{ url_for('front.get_captcha') }}"
+             onclick="this.src='{{ url_for('front.get_captcha') }}?'+ Math.random()">
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <p class="text-danger">{{ error }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+</form>
+{% endmacro %}
+

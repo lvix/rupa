@@ -1,0 +1,16 @@
+{% from 'macros.html' import render_head_area, render_form %}
+{% from 'dashboard/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}个人信息{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+<div class="form_generic">
+{{ render_form(form, url_for('dashboard.profile_edit', user_id=current_user.id)) }}
+</div>
+{% endblock %}

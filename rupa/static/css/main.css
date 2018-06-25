@@ -1,0 +1,110 @@
+.post_text > p{
+    color: #8e8e9a;
+}
+
+/*
+ * Container
+ *
+ * Center the page content.
+ */
+
+.main_container {
+    max-width: 70rem;
+    margin-left:  auto;
+    margin-right: auto;
+}
+
+.md_input{
+    resize: none;
+    height: 510px;
+}
+
+.md_preview{
+    overflow-y: scroll;
+    height: 510px;
+}
+
+blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+}
+
+blockquote p {
+    display: inline;
+}
+
+
+.form_generic {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
+/*
+ * post_card
+ *
+ * post_card 样式
+ */
+.post_card{
+    width: 100%;
+    height: 320 px;
+    border: 0.12 rem;
+}
+.post_card_icon{
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar_card{
+
+}
+
+.sidebar_header{
+
+}
+
+.bg-teal-500{
+background-color:#009688 !important;
+}
+
+.bd-teal-700{
+border-color:#00796B !important;
+}
+
+.text-teal-800{
+color:#00695C !important;
+}
+
+/* unvisited link */
+a.teal-link:link {
+    color: #00695C !important;
+}
+
+/* visited link */
+a.teal-link:visited {
+    color: #00695C !important;
+}
+
+/* mouse over link */
+a.teal-link:hover {
+    color: #26A69A !important;
+}
+
+/* selected link */
+a.teal-link>a:active {
+    color: #00695C !important;
+}
+

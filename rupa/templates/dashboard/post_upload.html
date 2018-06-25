@@ -1,0 +1,15 @@
+{% from 'macros.html' import render_head_area %}
+{% from 'dashboard/macros.html' import render_post_form %}
+{% extends "base.html" %}
+{% block title %}导入文章{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+<div class="form_generic">
+{{ render_form(form, url_for('dashboard.post_upload'), file_accept=file_accept) }}
+</div>
+{% endblock %}

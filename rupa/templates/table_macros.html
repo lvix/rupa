@@ -1,0 +1,49 @@
+{% macro render_data_table(items, col_titles) %}
+<table class="table table-hover">
+<thead>
+    <tr>
+        {% for col_title in col_titles %}
+        <th scope="col">{{ col_title }}</th>
+        {% endfor %}
+    </tr>
+</thead>
+<tbody>
+        {% for item in items %}
+        <tr>{{ caller(item) }}</tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endmacro %}
+
+
+
+{% macro table_item_wrapper(content, url=None, button_style=None) %}
+    <td>{{ wrap_item(content, url=url, button_style=button_style) }}</td>
+{% endmacro %}
+
+{% macro wrap_item(content, url=None, button_style=None, button_size='sm') %}
+{#
+    :param content: 需要被包装的内容
+    :param url: 超链接
+    :param button_style: Bootstrap 预设的按钮样式
+#}
+    {% if button_size %}
+        {% set button_size = 'btn-' + button_size %}
+    {% else %}
+        {% set button_size = '' %}
+    {% endif %}
+
+
+    {% if url %}
+    <a href="{{ url }}">
+    {% endif %}
+        {% if button_style %}
+        <button type="button" class="btn btn-{{ button_style }} {{ button_size }}">
+        {% endif %}
+        {{ content }}
+        {% if button_style %}</button>{% endif %}
+    {% if url %}
+    </a>
+    {% endif %}
+{% endmacro %}
+

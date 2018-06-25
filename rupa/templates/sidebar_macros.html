@@ -1,0 +1,89 @@
+{% macro render_recent_users() %}
+    <div class="sidebar_card shadow mb-5" style="">
+        <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
+            <h5 class="text-white">新加入用户</h5>
+        </div>
+        <div class="row no-gutters p-2 bg-white" style="overflow:hidden;width:100%;">
+            {% set recent_users = sidebar_recent_users(cnt=9) %}
+            {% for i in range(recent_users | length) %}
+            {% set user = recent_users[i] %}
+                <div class="col-4 text-center mb-2">
+                <a href="{{ url_for('user.user_page', user_id=user.id) }}">
+                    <img src="{{ user.icon.url }}" alt="{{ user.nickname }}" style="width:80px;height:80px">
+                </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_recent_posts(blog=None) %}
+    <div class="sidebar_card shadow mb-5" style="">
+        <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
+            <h5 class="text-white">最新文章</h5>
+        </div>
+
+        <ul class="list-group list-group-flush">
+        {% for post in sidebar_recent_posts(blog) %}
+            <li class="list-group-item">
+                 <a class="teal-link" href="{{url_for('post.post_page', post_id=post.id)}}">
+                {{ post.title | long_string_cutter(25) }}
+                 </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro render_blog_categories(blog) %}
+    <div class="sidebar_card shadow mb-5" style="">
+        <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
+            <h5 class="text-white">文章分类</h5>
+        </div>
+
+        <ul class="list-group list-group-flush">
+        {% for cate in sidebar_blog_categories(blog) %}
+            <li class="list-group-item">
+                 <a class="teal-link" href="{{url_for('category.category_page', category_id=cate.id)}}">
+                {{ cate.name | long_string_cutter(25) }}
+                 </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro render_user_info(user) %}
+    <div class="sidebar_card shadow mb-5" style="">
+        <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
+            <h5 class="text-white">个人信息</h5>
+        </div>
+
+
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-center">
+            <img src="{{ user.icon.url }}" style="width:50%;height:50%;">
+            </li>
+            <li class="list-group-item text-center">
+            <strong>{{user.nickname}}</strong>
+            </li>
+            {% set gender_list=['保密', '男', '女'] %}
+            <li class="list-group-item">
+                性别：{{ gender_list[user.gender] }}
+            </li>
+            <li class="list-group-item">
+                自我介绍： {% if user.introduction %}{{ user.introduction }}{% endif %}
+            </li>
+            <li class="list-group-item">
+                城市： {% if user.country %}{{ user.country }}{% endif %}
+            </li>
+            <li class="list-group-item">
+                省： {% if user.province %}{{ user.province }}{% endif %}
+            </li>
+            <li class="list-group-item">
+                城市： {% if user.city %}{{ user.city }}{% endif %}
+            </li>
+        </ul>
+    </div>
+{% endmacro %}

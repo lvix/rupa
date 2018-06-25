@@ -1,0 +1,20 @@
+{% from 'macros.html' import render_head_area %}
+{% from 'dashboard/macros.html' import render_post_form %}
+{% extends "base.html" %}
+{% block title %}{{ form.title.data }} - 编辑文章 {% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+{{ render_post_form(form, url_for('dashboard.post_edit', post_id=post_id)) }}
+{% endblock %}
+
+{% block tail_js %}
+{{ super() }}
+{% from 'md_macros.html' import md_renderer, md_renderer_edit %}
+{{ md_renderer() }}
+{{ md_renderer_edit() }}
+{% endblock %}

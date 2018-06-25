@@ -1,0 +1,22 @@
+{% from 'macros.html' import render_head_area, render_pagination %}
+{% from 'dashboard/macros.html' import render_category_list %}
+{% extends "base.html" %}
+{% block title %}分类列表{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <h3>分类</h3>
+        {% if pagination.items | length == 0 %}
+            <h4>没有分类</h4>
+        {% else %}
+            {{ render_category_list(pagination.items, moment) }}
+            {{ render_pagination(pagination, endpoint) }}
+        {% endif %}
+
+</div>
+{% endblock %}

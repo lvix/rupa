@@ -1,0 +1,98 @@
+{# ############### 表单相关 ############### #}
+
+{% macro render_post_form(form, url) %}
+<form method="POST" action="{{ url }}" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+
+    {{ render_general_field(form.title, placeholder="标题") }}
+    <div class="form-group">
+        <div class="row">
+            <div class="col-6">
+                {{ form.text(class_="form-control md_input", row="20", placeholder="正文") }}
+            </div>
+            <div class="col-6 md_preview" id="text_preview">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            {{ render_general_field(form.tags, placeholder="标签（以逗号隔开）") }}
+            {{ render_general_field(form.visibility) }}
+            {{ render_general_field(form.post_password, placeholder="文章密码") }}
+            {{ render_general_field(form.permanent_link, placeholder="永久链接") }}
+
+            {{ render_general_field(form.abstract, placeholder="文章摘要") }}
+            <div class="form-check">
+                {{ form.auto_abstract(class_="form-check-input") }}
+                <label>{{ form.auto_abstract.label.text }}</label>
+            </div>
+        </div>
+
+        <div class="col-4">
+            {{ render_general_field(form.new_cate, placeholder="新建分类（多个分类以逗号隔开）") }}
+            {% for k, cate in form.category_fields.items() %}
+            <div class="form-check">
+                {{ cate(class_="form-check-input") }}
+                <label>{{ cate.label.text }}</label>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+
+    {{ form.submit(class_='btn btn-primary', type='submit') }}
+    {{ form.save_draft(class_='btn btn-secondary', type='submit') }}
+</form>
+{% endmacro %}
+
+{% macro render_general_field(field) %}
+<div class="form-group">
+    {{ field(class_='form-control', **kwargs) }}
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <span class="help-block">{{ error }}</span>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+
+{# ############### 表格相关 ############### #}
+
+{% from 'table_macros.html' import render_data_table, table_item_wrapper %}
+
+{% macro render_post_list(post_items, moment) %}
+{#
+    :param post_items: 文章数据库对象
+#}
+    {% call(item) render_data_table(post_items, col_titles = ['标题', '创建时间', '发表时间', '状态', '操作']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.title | long_string_cutter(24), item.get_link) }}
+        {{ table_item_wrapper(moment(item.created_at).format('YYYY-M-D h:mm:ss')) }}
+        {{ table_item_wrapper(moment(item.published_at).format('YYYY-M-D h:mm:ss')) }}
+        {% if item.status == item.STATUS_PUBLISHED %}
+            {{ table_item_wrapper('已发表', None, 'info') }}
+        {% elif item.status == item.STATUS_SUSPENDED %}
+            {{ table_item_wrapper('封禁', None, 'dark') }}
+        {% elif item.status == item.STATUS_DRAFT %}
+            {{ table_item_wrapper('草稿', None, 'secondary') }}
+        {% endif %}
+        {{ table_item_wrapper('编辑', url_for('dashboard.post_edit', post_id=item.id), 'info') }}
+        {{ table_item_wrapper('删除', url_for('dashboard.post_delete', post_id=item.id), 'danger') }}
+    {% endcall %}
+{% endmacro %}
+
+
+{% macro render_category_list(cate_items, moment) %}
+{#
+    :param post_items: 分类数据库对象
+#}
+    {% call(item) render_data_table(cate_items, col_titles = ['标题', '创建时间', '操作', '']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.name | long_string_cutter(24), url_for('category.category_page', category_id=item.id)) }}
+        {{ table_item_wrapper(moment(item.created_at).format('YYYY-M-D h:mm:ss')) }}
+        {{ table_item_wrapper('编辑', url_for('dashboard.category_edit', cate_id=item.id, next=next_url), 'info') }}
+        {{ table_item_wrapper('删除', url_for('dashboard.category_delete', cate_id=item.id, next=next_url), 'danger') }}
+    {% endcall %}
+{% endmacro %}

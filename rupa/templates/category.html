@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination, render_index_post_list, render_head_area %}
+{% block title %}{{ category.name }} - lvix.me{% endblock %}
+
+{% block jumbotron %}
+{{ render_head_area('分类：' + category.name, category.blog.user.nickname, None) }}
+{% endblock %}
+
+{% block body%}
+{{ render_index_post_list(pagination.items, moment) }}
+{{ render_pagination(pagination, endpoint, category_id=category_id) }}
+{% endblock %}
