@@ -5,7 +5,7 @@
 
 
 {% block jumbotron %}
-{{ render_head_area(current_user.nickname, current_user.introduction, url_for('static', filename='img/logo.png'), None) }}
+{% include 'dashboard/jumbotron.html' %}
 {% endblock %}
 
 {% block body%}
