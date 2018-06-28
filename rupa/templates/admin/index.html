@@ -1,6 +1,6 @@
 {% from 'macros.html' import render_head_area, render_pagination %}
 {% from 'table_macros.html' import wrap_item %}
-{% from 'admin/macros.html' import render_post_list, render_user_list %}
+{% from 'admin/macros.html' import render_post_list, render_user_list, render_invite_list %}
 
 {% extends "base.html" %}
 {% block title %}管理中心{% endblock %}
@@ -43,6 +43,26 @@
             </div>
             <div class="col-2">
                 {{ wrap_item('全部用户', url_for('admin.user_list'), 'primary', None) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-5">
+    <h5 class="card-header">邀请码</h5>
+    <div class="card-body">
+        {% if recent_users | length == 0 %}
+            <h4>没有邀请码</h4>
+        {% else %}
+            {{ render_invite_list(recent_codes, moment) }}
+        {% endif %}
+        <div class="row">
+            <div class="col-8"></div>
+            <div class="col-2">
+                {{ wrap_item('生成邀请码', url_for('admin.invitation_codes_gen'), 'info', None) }}
+            </div>
+            <div class="col-2">
+                {{ wrap_item('全部邀请码', url_for('admin.invitation_codes'), 'primary', None) }}
             </div>
         </div>
     </div>

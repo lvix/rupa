@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body%}
-
+<div class="form_generic">
 <div class="form-group">
     <label>用户名</label>
     <input class="form-control" id="username_false" value="{{ user.username }}" type="text" disabled>
@@ -28,6 +28,7 @@
     {{ render_general_field(form.status) }}
     {{ render_general_field(form.introduction) }}
     {{ render_general_field(form.password) }}
-    {{ form.submit(class='btn btn-primary', type='submit') }}
+    {{ form.submit(class='btn btn-primary btn-block', type='submit') }}
 </form>
+</div>
 {% endblock %}

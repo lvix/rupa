@@ -20,12 +20,14 @@ admin = Blueprint('admin', __name__, url_prefix='/admin')
 @admin.route('/')
 @roles_required(User.ROLE_ADMIN)
 def index():
-    recent_users = User.query.order_by(User.created_at).limit(5).all()
+    recent_users = User.query.order_by(User.created_at.desc()).limit(5).all()
     recent_posts = Post.query.order_by(Post.updated_at.desc()).limit(5).all()
+    recent_codes = InvitationCode.query.order_by(InvitationCode.created_at.desc()).limit(5).all()
     return render_template('admin/index.html',
                            user=current_user,
                            recent_users=recent_users,
                            recent_posts=recent_posts,
+                           recent_codes=recent_codes,
                            )
 
 
@@ -141,6 +143,28 @@ def invitation_codes():
 @roles_required(User.ROLE_ADMIN)
 def invitation_codes_delete(code_id):
     return delete_target(InvitationCode, code_id, '邀请码')
+
+
+@admin.route('/invitation_codes/gen/')
+@roles_required(User.ROLE_ADMIN)
+def invitation_codes_gen():
+    if InvitationCode.query.count() < 1000:
+        try:
+            for i in range(10):
+                while True:
+                    code = InvitationCode()
+                    if InvitationCode.query.filter_by(code=code.code).first() is None:
+                        break
+                db.session.add(code)
+            db.session.commit()
+            flash('成功生成10个邀请码', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('无法生成邀请码', 'danger')
+    return redirect(request.args.get('next') or
+                    request.referrer or
+                    url_for('admin.index'))
+
 
 
 def render_list(db_obj, order_attr, endpoint, template):
