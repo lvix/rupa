@@ -99,6 +99,7 @@ class RegisterForm(FlaskForm):
             new_messagebox = MessageBox(user=new_user)
             new_icon = Icon(user=new_user)
             new_album = Album(name='默认相册', user=new_user)
+            new_cover_album = Album(name='文章封面', user=new_user)
             if current_app.config['INVITE_REQUIRED']:
                 code = InvitationCode.query.filter_by(code=self.invitation_code.data).first()
                 new_user.invitation_code = code
@@ -110,6 +111,7 @@ class RegisterForm(FlaskForm):
             db.session.add(new_icon)
             db.session.add(new_user)
             db.session.add(new_album)
+            db.session.add(new_cover_album)
             db.session.commit()
 
             return new_user

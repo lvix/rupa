@@ -22,6 +22,8 @@
             {{ render_general_field(form.permanent_link, placeholder="永久链接") }}
 
             {{ render_general_field(form.abstract, placeholder="文章摘要") }}
+
+
             <div class="form-check">
                 {{ form.auto_abstract(class_="form-check-input") }}
                 <label>{{ form.auto_abstract.label.text }}</label>
@@ -36,7 +38,12 @@
                 <label>{{ cate.label.text }}</label>
             </div>
             {% endfor %}
-
+            <h5>封面图片：</h5>
+            (保存到 <strong>文章封面</strong> 相册)
+            {{ render_general_field(form.intro_photo) }}
+            {% if form.intro_photo_url | length > 0%}
+                <img src="{{ form.intro_photo_url }}">
+            {% endif %}
         </div>
     </div>
 

@@ -72,3 +72,21 @@
         {{ table_item_wrapper('删除', url_for('admin.user_delete', user_id=item.id), 'danger') }}
     {% endcall %}
 {% endmacro %}
+
+{% macro render_invite_list(invite_codes, moment) %}
+{#
+    :param invite_codes: 邀请码对象
+#}
+ {% call(item) render_data_table(invite_codes, col_titles = ['id', '邀请码', '状态', '注册用户', '过期时限', '操作']) %}
+    {# 以下内容会被嵌入 render_data_table() 中 caller() 的位置 #}
+        {{ table_item_wrapper(item.id) }}
+{{ table_item_wrapper(('<span class="text-monospace">' + item.code + '</span>') | safe ) }}
+        {% set STATUS_LIST=['可使用', '已使用', '已过期']%}
+        {{ table_item_wrapper(STATUS_LIST[item.status]) }}
+        {% if item.user %}{{ table_item_wrapper(item.user.username) }}
+            {% else %}{{ table_item_wrapper('-') }}{% endif %}
+        {{ table_item_wrapper(moment(item.expired_time).format('YYYY-M-D h:mm:ss')) }}
+        {{ table_item_wrapper('删除', url_for('admin.invitation_codes_delete', code_id=item.id), 'danger') }}
+    {% endcall %}
+
+{% endmacro %}

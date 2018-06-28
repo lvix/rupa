@@ -10,7 +10,7 @@
 from flask import Blueprint, render_template, url_for, flash, current_app, redirect, request
 from flask_login import current_user
 from rupa.decorators import roles_required, blog_required
-from rupa.models import db, User, Post, Blog, Notification, Message, Category
+from rupa.models import db, User, Post, Blog, Notification, Message, Category, Album, Photo
 from rupa.forms import PostForm, CateForm, ProfileForm, BlogInfoForm, PostUploadForm
 from wtforms import BooleanField
 
@@ -178,7 +178,7 @@ def post_edit(post_id):
                 flash('现在无法发表', 'danger')
                 return render_template('dashboard/post_edit.html', form=form, post_id=post_id)
         else:
-            print('验证失败')
+            # print('验证失败')
             for field in form:
                 if field.errors:
                     for error in field.errors:
@@ -342,5 +342,6 @@ def profile_edit(user_id):
             #         for e in field.errors:
             #             print(e)
     return render_template('dashboard/profile_edit.html', form=form)
+
 
 

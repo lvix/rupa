@@ -18,7 +18,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, TextAreaField, BooleanField, ValidationError, FileField
 from wtforms.validators import Length, DataRequired
 
-from rupa.models import db, Post, Category, Tag
+from rupa.models import db, Post, Category, Tag, Photo, Album
+
+from PIL import Image
 
 
 class PostForm(FlaskForm):
@@ -29,6 +31,7 @@ class PostForm(FlaskForm):
     submit = SubmitField('发表')
     save_draft = SubmitField('保存草稿')
 
+    intro_photo = FileField('封面照片')
     abstract = TextAreaField('摘要', validators=[Length(max=500)])
     auto_abstract = BooleanField('自动生成摘要')
 
@@ -47,6 +50,8 @@ class PostForm(FlaskForm):
 
     category_fields = {}
 
+    intro_photo_url = ''
+
     def validate_password(self, field):
         if len(field.data) > 0:
             if re.compile(r'^[0-9a-zA-Z]*$').match(field.data) is None:
@@ -56,6 +61,12 @@ class PostForm(FlaskForm):
         if len(field.data) > 0:
             if re.compile(r'^[0-9a-zA-Z\-]*$').match(field.data) is None:
                 raise ValidationError('永久链接仅包含字母、数字 和连字符(-) ')
+
+    def validate_intro_photo(self, field):
+        if field.data:
+            # print(field.data.filename)
+            if not re.compile(r'^[^/\\]+\.(jpg|jpeg|png|gif)$').match(field.data.filename):
+                raise ValidationError('文件类型错误')
 
     def update_post(self, post=None):
         """
@@ -115,7 +126,12 @@ class PostForm(FlaskForm):
                 post.gen_abstract()
             else:
                 post.abstract = self.abstract.data
-
+            
+            # 处理封面照片
+            if self.intro_photo.data:
+                post.intro_photo = self.save_photo(self.intro_photo.data)
+                self.intro_photo_url = post.intro_photo.url_thumb
+            
             post.password = self.post_password.data if len(self.post_password.data) > 0 else None
 
             self.new_cate.data = ''
@@ -144,12 +160,90 @@ class PostForm(FlaskForm):
             tags_str = ', '.join([tag.name for tag in post.tags])
             self.tags.data = tags_str
             self.post_password.data = post.password
+
+            if post.intro_photo:
+                self.intro_photo_url = post.intro_photo.url_thumb
             return True
         except Exception as e:
             print('Failed loading post：')
             print(e)
             return False
 
+    def save_photo(self, field_data):
+        """
+        保存照片，并生成数据库记录
+        :return: 数据记录 Photo 对象
+        """
+        if field_data is None:
+            return
+        img_path = ''
+        thumb_path = ''
+        try:
+            new_photo = Photo()
+            new_photo.album = Album.query.filter_by(user=current_user).filter_by(name='文章封面').first()
+            # print(new_photo.album)
+            if new_photo.album is None:
+                cover_album = Album(name="文章封面", user=current_user)
+                db.session.add(cover_album)
+                new_photo.album = cover_album
+
+            title = field_data.filename.split('.')[0].lower()
+            fmt = field_data.filename.split('.')[-1].lower()
+            img_name = hashlib.md5((fmt + datetime.utcnow().strftime('%Y%m%d%H%M%S%f') + fmt).encode('utf-8')).hexdigest()
+            img_dir = current_app.config['UPLOADED_PHOTO_DEST']
+
+            img = Image.open(field_data)
+            img_path = os.getcwd() + img_dir + img_name + '.{}'.format(fmt)
+
+            img.save(img_path, 'jpeg' if fmt == 'jpg' else fmt)
+
+            thumb = Image.open(field_data)
+            w, h = thumb.size
+            if h > w:
+                h = int(240 / w * h)
+                w = 240
+                if h < 320:
+                    w, h = thumb.size
+                    w = int(320 / h * w)
+                    h = 320
+            elif w > h:
+                w = int(320 / h * w)
+                h = 320
+                if w < 240:
+                    w, h = thumb.size
+                    h = int(240 / w * h)
+                    w = 240
+            else:
+                h = 320
+                w = 320
+            thumb = thumb.resize((w, h))
+
+            # if w > 240:
+            x0, y0 = int((w - 240) / 2), int((h - 320) / 2)
+            x1, y1 = x0 + 240, y0 + 320
+            print((x0, y0, x1, y1))
+            thumb = thumb.crop((x0, y0, x1, y1))
+
+            thumb_name = img_name + '240x320.png'
+            thumb_path = os.getcwd() + img_dir + thumb_name
+            thumb.save(thumb_path, 'png')
+
+            new_photo.title = title
+            new_photo.image_name = img_name + '.{}'.format(fmt)
+            new_photo.image_dir = img_dir
+            new_photo.thumb_name = thumb_name
+            new_photo.thumb_dir = img_dir
+
+            db.session.add(new_photo)
+            db.session.commit()
+            return new_photo
+        except Exception as e:
+            db.session.rollback()
+            if os.path.isfile(img_path):
+                os.remove(img_path)
+            if os.path.isfile(thumb_path):
+                os.remove(thumb_path)
+            raise e
 
 class PostUploadForm(FlaskForm):
     file = FileField('上传 markdown 文件', validators=[])  # Regexp(r'^[^/\\]\.(md|MD)$', message='请选择正确的文件类型')])

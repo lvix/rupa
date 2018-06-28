@@ -50,6 +50,20 @@ def register_filters(app):
         """
         return text.replace('`', '\`')
 
+    @app.template_filter()
+    def album_cover_url(album):
+        """
+        获得
+        :param album:
+        :return:
+        """
+        from rupa.models import Photo
+        target = album.photos.order_by(Photo.created_at.desc()).first()
+        if target:
+            return target.url_thumb
+        else:
+            return ''
+
     @app.template_global()
     def sidebar_recent_users(cnt=10):
         # 最新用户

@@ -153,11 +153,17 @@ class User(Base, UserMixin):
 class Album(Base):
     __tablename__ = 'album'
 
+    TYPE_PUBLIC = 0
+    TYPE_PASSWORD = 1
+    TYPE_PRIVATE = 2
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(16), index=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     photos = db.relationship('Photo', lazy='dynamic', backref=db.backref('album'),
                              cascade='all, delete-orphan')
+    status = db.Column(db.SmallInteger, default=TYPE_PUBLIC, nullable=False)
+    password = db.Column(db.String(16), default=None)
 
     def __repr__(self):
         return '<Album {} of User {}>'.format(self.id, self.user_id)
@@ -429,6 +435,7 @@ class Photo(Base):
 
     id = db.Column(db.Integer, primary_key=True)
     album_id = db.Column(db.Integer, db.ForeignKey('album.id', ondelete='CASCADE'), nullable=False)
+    title = db.Column(db.String(20))
     image_name = db.Column(db.String, index=True)
     image_dir = db.Column(db.String)
     thumb_name = db.Column(db.String)

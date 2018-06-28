@@ -1,0 +1,33 @@
+{% from 'macros.html' import render_head_area, render_pagination, render_form %}
+{% from 'dashboard/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}{% if photo.title %}{{ photo.title }}{% else %}{{ photo.image_name }}{% endif %}{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block main_content %}
+<div class="text-center">
+    <img src="{{ photo.url }}" class="img-thumbnail rounded" alt="{{ photo.created_at }}">
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('photo.album_index') }}">我的相册</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('photo.album_page', album_id=album.id) }}">{{ album.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ photo.image_name | long_string_cutter(6) }}</li>
+  </ol>
+</nav>
+
+
+{% if photo.title %}<h4>{{ photo.title }}</h4>{% endif %}
+{{ moment(photo.created_at).format('YYYY-M-D H:m:s') }}
+<textarea rows="5">
+{{ photo.url }}
+</textarea>
+{% endblock %}

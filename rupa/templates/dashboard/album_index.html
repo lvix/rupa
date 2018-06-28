@@ -1,0 +1,32 @@
+{% from 'macros.html' import render_head_area, render_pagination, render_form %}
+{% from 'table_macros.html' import wrap_item %}
+{% from 'dashboard/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}相册首页{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block main_content %}
+<div class="row">
+{% for album in pagination.items %}
+    <div class="text-center col-4">
+        <a href="{{ url_for('photo.album_page', album_id=album.id, page=1) }}" class="">
+            <img src="{{ album | album_cover_url }}" class="img-thumbnail rounded mb-2" alt="{{ album.name }}">
+        </a>
+        <a href="{{ url_for('photo.album_page', album_id=album.id, page=1) }}" class="m-2"><h5>{{ album.name }}</h5></a>
+    </div>
+{% endfor %}
+</div>
+
+{{ render_pagination(pagination, endpoint) }}
+{% endblock %}
+
+{% block sidebar %}
+一共 {{ current_user.albums | length }} 个相册
+{{ wrap_item('上传照片', url_for('photo.photo_upload'), 'info') }}
+{% endblock %}
+

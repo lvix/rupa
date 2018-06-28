@@ -10,7 +10,7 @@
 from flask import Blueprint, render_template, url_for, flash, current_app, redirect, request
 from flask_login import current_user
 from rupa.decorators import roles_required
-from rupa.models import db, User, Post, Blog, Notification, Message, Category
+from rupa.models import db, User, Post, Blog, Notification, Message, Category, InvitationCode
 from rupa.forms import AdminUserForm
 
 
@@ -129,7 +129,18 @@ def post_change_status(post_id):
 @admin.route('/post/delete/<int:post_id>/')
 @roles_required(User.ROLE_ADMIN)
 def post_delete(post_id):
-    return delete_target(Post, post_id, '')
+    return delete_target(Post, post_id, '文章')
+
+
+@admin.route('/invitation_codes/')
+@roles_required(User.ROLE_ADMIN)
+def invitation_codes():
+    return render_list(InvitationCode, InvitationCode.created_at, 'admin.invitation_codes', 'admin/invitation_list.html')
+
+@admin.route('/invitation_codes/delete/<code_id>')
+@roles_required(User.ROLE_ADMIN)
+def invitation_codes_delete(code_id):
+    return delete_target(InvitationCode, code_id, '邀请码')
 
 
 def render_list(db_obj, order_attr, endpoint, template):
@@ -149,12 +160,17 @@ def render_list(db_obj, order_attr, endpoint, template):
 
 def delete_target(db_obj, target_id, flash_word=''):
     target = db_obj.query.get_or_404(target_id)
+    print(target)
     try:
         db.session.delete(target)
+        db.session.commit()
         flash('删除{} {} 成功'.format(flash_word, target_id), 'success')
     except Exception as e:
+        print(e)
         db.session.rollback()
         flash('删除{} {}失败'.format(flash_word, target_id), 'danger')
     return redirect(request.args.get('next') or
                     request.referrer or
                     url_for('admin.index'))
+
+

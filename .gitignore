@@ -1,6 +1,7 @@
 # rupa 
 *.sqlite 
 debug_img/
+migrations
 
 .vscode
 .idea

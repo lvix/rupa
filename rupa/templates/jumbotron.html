@@ -1,4 +1,4 @@
-{% if current_user.icon.image_name %}
+{% if current_user.icon %}
     {% set icon_url = url_for('photo.icon_get', filename=current_user.icon.image_name) %}
 {% else %}
     {% set icon_url = '' %}

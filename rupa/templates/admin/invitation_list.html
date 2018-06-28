@@ -1,0 +1,22 @@
+{% from 'macros.html' import render_head_area, render_pagination %}
+{% from 'admin/macros.html' import render_invite_list%}
+
+{% extends "base.html" %}
+{% block title %}邀请码列表{% endblock %}
+
+
+{% block jumbotron %}
+{{ render_head_area(admin, '', url_for('static', filename='img/logo.png')) }}
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <h3>邀请码列表</h3>
+        {% if pagination.items | length == 0 %}
+            <h4>没有邀请码</h4>
+        {% else %}
+            {{ render_invite_list(pagination.items, moment) }}
+            {{ render_pagination(pagination, endpoint) }}
+        {% endif %}
+</div>
+{% endblock %}

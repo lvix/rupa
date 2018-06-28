@@ -18,6 +18,7 @@
             <li>上次登录时间： {{ moment(user.last_login_time).format('YYYY-M-D H:m:s') }}</li>
         </ul>
         {{ wrap_item('个人信息', url_for('dashboard.profile_edit', user_id=current_user.id), 'info') }}
+        {{ wrap_item('我的相册', url_for('photo.album_index'), 'info') }}
         {% if not current_user.blog %}
             {{ wrap_item('创建博客', url_for('dashboard.blog_new'), 'primary') }}
         {% endif %}

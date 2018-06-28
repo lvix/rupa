@@ -46,6 +46,7 @@ class PhotoUploadForm(FlaskForm):
             new_photo.album = Album.query.get(int(self.albums_field.data))
             # print(new_photo.album)
 
+            title = field_data.filename.split('.')[0].lower()
             fmt = field_data.filename.split('.')[-1].lower()
             img_name = hashlib.md5((fmt + datetime.utcnow().strftime('%Y%m%d%H%M%S%f') + fmt).encode('utf-8')).hexdigest()
             img_dir = current_app.config['UPLOADED_PHOTO_DEST']
@@ -57,25 +58,56 @@ class PhotoUploadForm(FlaskForm):
 
             thumb = Image.open(field_data)
             w, h = thumb.size
-            if w < 120 < h:
-                w = int(h / 120 * w)
-                h = 120
-            elif w > 120 > h:
-                h = int(w / 120 * w)
-                w = 120
-            elif w > 120 and h > 120:
-                if h > w:
-                    w = int(h / 120 * w)
-                    h = 120
-                else:
-                    h = int(w / 120 * w)
-                    w = 120
+            # if w < 120 < h:
+            #     w = int(h / 120 * w)
+            #     h = 120
+            # elif w > 120 > h:
+            #     h = int(w / 120 * w)
+            #     w = 120
+            # elif w > 120 and h > 120:
+            #     if h > w:
+            #         w = int(h / 120 * w)
+            #         h = 120
+            #     else:
+            #         h = int(w / 120 * w)
+            #         w = 120
+            #
+            # thumb.thumbnail((w, h))
+            # thumb_name = img_name + 'x120.png'
 
-            thumb.thumbnail((w, h))
-            thumb_name = img_name + 'x120.png'
+            if h > w:
+                h = int(240 / w * h)
+                w = 240
+                if h < 320:
+                    w, h = thumb.size
+                    w = int(320 / h * w)
+                    h = 320
+            elif w > h:
+                w = int(320 / h * w)
+                h = 320
+                if w < 240:
+                    w, h = thumb.size
+                    h = int(240 / w * h)
+                    w = 240
+            else:
+                h = 320
+                w = 320
+            thumb = thumb.resize((w, h))
+
+            # if w > 240:
+            x0, y0 = int((w - 240) / 2), int((h - 320) / 2)
+            x1, y1 = x0 + 240, y0 + 320
+            # elif h > 320:
+            #     x0, y0 = 0, int((h - 320) / 2)
+            #     x1, y1 = 240, y0 + 320
+
+            thumb = thumb.crop((x0, y0, x1, y1))
+
+            thumb_name = img_name + '240x320.png'
             thumb_path = os.getcwd() + img_dir + thumb_name
             thumb.save(thumb_path, 'png')
 
+            new_photo.title = title
             new_photo.image_name = img_name + '.{}'.format(fmt)
             new_photo.image_dir = img_dir
             new_photo.thumb_name = thumb_name
@@ -118,4 +150,9 @@ def user_photo_form(user=current_user):
     return form
 
 
-
+def photo_processing(field_data):
+    """
+    保存照片，并生成数据库记录
+    :return: 数据记录 Photo 对象
+    """
+    pass

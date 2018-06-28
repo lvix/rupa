@@ -2,6 +2,11 @@
     color: #8e8e9a;
 }
 
+.post_text img{
+    width: 100%;
+    height: 100%;
+}
+
 /*
  * Container
  *
@@ -22,6 +27,11 @@
 .md_preview{
     overflow-y: scroll;
     height: 510px;
+}
+
+.md_preview img{
+    width:100%;
+    height:100%;
 }
 
 blockquote {

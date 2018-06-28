@@ -1,0 +1,35 @@
+{% from 'macros.html' import render_head_area, render_pagination, render_form %}
+{% from 'dashboard/macros.html' import render_general_field %}
+
+{% extends "base.html" %}
+{% block title %}{{ album.name }}{% endblock %}
+
+
+{% block jumbotron %}
+{% include 'dashboard/jumbotron.html' %}
+{% endblock %}
+
+{% block main_content %}
+<div class="row">
+{% for photo in pagination.items %}
+    <div class="text-center col-4 mb-3">
+        <a href="{{ url_for('photo.album_preview', album_id=album.id, image_name=photo.image_name) }}">
+            <img src="{{ photo.url_thumb }}" class="img-thumbnail rounded" alt="{{ photo.created_at }}">
+        </a>
+    </div>
+{% endfor %}
+</div>
+
+{{ render_pagination(pagination, endpoint, album_id=album.id) }}
+
+{% endblock %}
+
+{% block sidebar %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('photo.album_index') }}">我的相册</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ album.name }}</a></li>
+  </ol>
+</nav>
+一共 {{ album.photos.count() }} 张照片
+{% endblock %}
