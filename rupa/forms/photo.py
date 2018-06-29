@@ -92,7 +92,7 @@ class PhotoUploadForm(FlaskForm):
             else:
                 h = 320
                 w = 320
-            thumb = thumb.resize((w, h))
+            thumb = thumb.resize((w, h), Image.BICUBIC)
 
             # if w > 240:
             x0, y0 = int((w - 240) / 2), int((h - 320) / 2)

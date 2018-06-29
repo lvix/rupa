@@ -224,8 +224,9 @@ def post_upload():
             try:
                 post_uri = form.save_file()
                 new_post = form.create_post(post_uri)
-                flash('上传成功')
+                # print(new_post)
                 return redirect(url_for('dashboard.post_edit', post_id=new_post.id))
+                flash('上传成功', 'success')
             except Exception as e:
                 print(e)
                 flash('上传失败', 'danger')

@@ -216,12 +216,12 @@ class PostForm(FlaskForm):
             else:
                 h = 320
                 w = 320
-            thumb = thumb.resize((w, h))
+            thumb = thumb.resize((w, h), Image.BICUBIC)
 
             # if w > 240:
             x0, y0 = int((w - 240) / 2), int((h - 320) / 2)
             x1, y1 = x0 + 240, y0 + 320
-            print((x0, y0, x1, y1))
+            # print((x0, y0, x1, y1))
             thumb = thumb.crop((x0, y0, x1, y1))
 
             thumb_name = img_name + '240x320.png'
@@ -252,14 +252,14 @@ class PostUploadForm(FlaskForm):
 
     def save_file(self):
 
-        save_dir = os.path.join(current_app.config['UPLOADED_MD_URL'])
+        save_dir = os.getcwd() + current_app.config['UPLOADED_MD_DEST']
         # print(save_dir)
         # print(self.file.data.filename)
         # print(self.file.data)
 
         filename = hashlib.md5(
             ('md' + datetime.utcnow().strftime('%Y%m%d%H%M%S%f') + 'md').encode('utf-8')).hexdigest() + '.md'
-        print(save_dir + filename)
+        # print(save_dir + filename)
         try:
             with open(save_dir + filename, 'wb') as f:
                 file_data = self.file.data.read()
