@@ -50,8 +50,8 @@ def photo_get(filename):
 @photo.route('/thumb/<filename>/', methods=['GET'])
 def photo_thumb(filename):
     target = Photo.query.filter_by(thumb_name=filename).first()
-    if request.referrer is None or request.referrer.find(request.host_url):
-        abort(404)
+    # if request.referrer is None or request.referrer.find(request.host_url):
+    #     abort(404)
 
     path = target.full_path_thumb
     # print(path)

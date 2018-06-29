@@ -1,4 +1,6 @@
-# rupa 
+# rupa
+gunicorn.py
+rupa_files/
 *.sqlite 
 debug_img/
 migrations
