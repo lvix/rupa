@@ -24,7 +24,7 @@ class AdminUserForm(FlaskForm):
     user_edit 页面所用的表单
     """
     nickname = StringField('昵称', validators=[DataRequired(message='昵称不可为空'),
-                                             Length(3, 20, message='长度应在6~20个字符之间'),
+                                             Length(3, 20, message='长度应在3~20个字符之间'),
                                              Regexp('^[^,<>;:\-_=&%#@!~`\*\.\?\+\$\^\[\]\(\)\{\}\|\\\/]*$',
                                                     message='包含有奇怪的字符')])
     role = SelectField('角色', choices=[('ADMIN', '管理员'), ('USER', '普通用户')], default='USER')

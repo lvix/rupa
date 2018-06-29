@@ -110,8 +110,9 @@ class PostForm(FlaskForm):
 
             # 处理Tags
             post.tags = []
-            tags_str = self.new_cate.data.strip()
+            tags_str = self.tags.data.strip()
             tag_names = re.split(r'\s*[,，]\s*', tags_str)
+            print(tags_str, tag_names)
             if len(tag_names) > 0:
                 for tag_name in tag_names:
                     if len(tag_name) > 0:
