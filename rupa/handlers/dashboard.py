@@ -58,8 +58,8 @@ def blog_new():
 
 
 @dashboard.route('/blog/info/', methods=['GET', 'POST'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def blog_info():
     form = BlogInfoForm()
     if request.method == 'GET':
@@ -78,8 +78,8 @@ def blog_info():
 
 
 @dashboard.route('/post/')
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def post():
     page = request.args.get('page', default=1, type=int)
     pagination = current_user.blog.posts.order_by(Post.published_at.desc()).paginate(
@@ -96,8 +96,8 @@ def post():
 
 
 @dashboard.route('/post/new', methods=['GET', 'POST'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def post_new():
     form = gen_dynamic_form()
     if request.method == 'POST':
@@ -124,8 +124,8 @@ def post_new():
 
 
 @dashboard.route('/post/delete/<int:post_id>', methods=['GET'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def post_delete(post_id):
     target = current_user.blog.posts.filter_by(id=post_id).first()
     if target:
@@ -146,8 +146,8 @@ def post_delete(post_id):
 
 
 @dashboard.route('/post/edit/<int:post_id>', methods=['GET', 'POST'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def post_edit(post_id):
 
     form = gen_dynamic_form()
@@ -215,8 +215,8 @@ def gen_dynamic_form():
 
 
 @dashboard.route('/post/upload/', methods=['GET', 'POST'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def post_upload():
     form = PostUploadForm()
     if request.method == 'GET':
@@ -243,8 +243,8 @@ def post_upload():
 
 
 @dashboard.route('/category/')
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def category():
     page = request.args.get('page', default=1, type=int)
     pagination = current_user.blog.categories.order_by(Category.updated_at.desc()).paginate(
@@ -262,8 +262,8 @@ def category():
 
 
 @dashboard.route('/category/new/')
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def category_new():
     form = CateForm()
     if request.method == 'GET':
@@ -277,8 +277,8 @@ def category_new():
 
 
 @dashboard.route('/category/<int:cate_id>/delete/')
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def category_delete(cate_id):
     target = current_user.blog.categories.filter_by(id=cate_id).first()
     if target:
@@ -301,8 +301,8 @@ def category_delete(cate_id):
 
 
 @dashboard.route('/category/<int:cate_id>/edit/', methods=['GET', 'POST'])
-@blog_required()
 @roles_required(User.ROLE_USER)
+@blog_required()
 def category_edit(cate_id):
 
     target = current_user.blog.categories.filter_by(id=cate_id).first_or_404()

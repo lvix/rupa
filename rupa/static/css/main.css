@@ -1,5 +1,5 @@
 .post_text > p{
-    color: #8e8e9a;
+    color: #000;
 }
 
 .post_text img{
@@ -121,4 +121,32 @@ a.teal-link>a:active {
 .teal-btn{
 border-radius: 0rem !important;
 border: 0px !important;
+}
+
+.teal-pagination{
+    color: #009688;
+    border: 2px solid #009688;
+    height: 2rem;
+    width: 2rem;
+    padding-top: 0.15rem;
+}
+
+/* mouse over link */
+.teal-pagination:hover {
+    color: #26A69A !important;
+    font-weight: bold;
+}
+
+
+.teal-pagination-highlight{
+    color: #FFF !important;
+    border: 0px solid;
+    background-color:#009688;
+    height: 2rem;
+    width: 2rem;
+    padding-top: 0.25rem;
+}
+
+.teal-pagination-page{
+
 }

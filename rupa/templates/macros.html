@@ -152,36 +152,49 @@
     </ul>
 </nav>
 {% endmacro %}
+
 {%- macro render_pagination(pagination, endpoint) %}
-<div class="btn-group" role="group" aria-label="Basic example">
-    <button class="btn btn-secondary {% if not pagination.has_prev %}disabled{% endif %}">
+<div class="text-center text-monospace mt-5 pt-5">
+    <div class="d-flex flex-row">
         <a {%- if pagination.has_prev %}
            href="{{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}"
            {% endif %}
-           aria-label="Previous" class="text-light">
-            &laquo;
+           aria-label="Previous" class="teal-pagination text-center mr-3">
+            <div class="teal-pagination-page text-center">
+                &laquo;
+            </div>
         </a>
-    </button>
-    {% for p in pagination.iter_pages() %}
 
-    {% if p == pagination.page %}
-    <button type="button" class="btn btn-secondary">
-        <a class="text-light"><strong>{{ p }}</strong></a>
-    </button>
-    {% else %}
-    <button type="button" class="btn btn-secondary">
-        <a class="text-light" href="{{ url_for(endpoint, page=p, **kwargs) }}">{{ p }}</a>
-    </button>
-    {% endif %}
+        {% for p in pagination.iter_pages() %}
 
-    {% endfor %}
+        {% if p == pagination.page %}
+        <a class="teal-pagination-highlight text-center mr-3">
+            <div class="teal-pagination-page">
+                <strong>{{ p }}</strong>
+            </div>
+        </a>
+        {% elif p == None %}
+        <a class="teal-pagination text-center mr-3">
+            <div class="teal-pagination-page">
+                ...
+            </div>
+        </a>
+        {% else %}
+        <a class="teal-pagination text-center mr-3"
+           href="{{ url_for(endpoint, page=p, **kwargs) }}">
+            <div class="teal-pagination-page">{{ p }}</div>
+        </a>
+        {% endif %}
 
-    <button class="btn btn-secondary {% if not pagination.has_next %}disabled{% endif %}">
+        {% endfor %}
+
         <a {%- if pagination.has_next %}
            href="{{ url_for(endpoint, page=pagination.page + 1, **kwargs) }}"
-            {% endif -%}
-           aria-label="Next" class="text-light">&raquo;</a>
-    </button>
+           {% endif -%}
+           aria-label="Next" class="teal-pagination text-center mr-3">
+            <div class="teal-pagination-page">&raquo;</div>
+        </a>
+    </div>
 </div>
 {%- endmacro %}
 
@@ -223,8 +236,8 @@
         <a href="/" class="teal-link">{{ head_string }}</a></span>
 
     <h3>{% if icon %}
-    {# <img class="d-block mx-auto my-6 py-6 post_card_icon" src="{{ icon }}" alt=""> #}
-    {% endif %}{{ title }}</h3>
+        {# <img class="d-block mx-auto my-6 py-6 post_card_icon" src="{{ icon }}" alt=""> #}
+        {% endif %}{{ title }}</h3>
 
     {%- if description %}
     <p class="lead">{{ description }}</p>
