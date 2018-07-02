@@ -45,19 +45,19 @@
                 {% block nav_menu %}
                     {% if current_user.is_authenticated %}
                         {% if current_user.role == current_user.ROLE_USER %}
-                        <a class="btn bg-teal-500 bd-teal-700 teal-link" href="{{ url_for('dashboard.index') }}" >
+                        <a class="btn teal-btn bg-teal-500 bd-teal-700 ml-3 teal-link" href="{{ url_for('dashboard.index') }}" >
                             <h5 class="text-light">{{ current_user.nickname }}</h5>
                         </a>
                         {% elif current_user.role == current_user.ROLE_ADMIN %}
-                        <a class="btn bg-teal-500 bd-teal-700 teal-link" href="{{ url_for('admin.index') }}" >
+                        <a class="btn teal-btn bg-teal-500 bd-teal-700 ml-3 teal-link" href="{{ url_for('admin.index') }}" >
                             <h5 class="text-light">admin</h5>
                         </a>
                         {% endif %}
-                    <a class="btn bg-teal-500 bd-teal-700 teal-link" href="{{ url_for('front.logout') }}" >
+                    <a class="btn teal-btn bg-teal-500 bd-teal-700 ml-3 teal-link" href="{{ url_for('front.logout') }}" >
                         <h5 class="text-light">退出登录</h5>
                     </a>
                     {% else %}
-                    <a class="btn bg-teal-500 bd-teal-700 teal-link" href="{{ url_for('front.login') }}" >
+                    <a class="btn teal-btn bg-teal-500 bd-teal-700 ml-3 teal-link" href="{{ url_for('front.login') }}" >
                         <h5 class="text-light">登录</h5>
                     </a>
                     {% endif %}
@@ -67,12 +67,12 @@
             {% block body %}
 
             <div class="row">
-                <div class="col-9">
+                <div class="col-12 col-lg-9 col-xl-9">
                     {% block main_content %}
                     {% endblock %}
                 </div>
 
-                <div class="col-3">
+                <div class="col-lg-3 col-xl-3 d-none d-lg-block d-xl-block">
                     {% block sidebar %}
                     {% endblock %}
                 </div>

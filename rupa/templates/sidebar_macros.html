@@ -4,12 +4,12 @@
             <h5 class="text-white">新加入用户</h5>
         </div>
         <div class="row no-gutters p-2 bg-white" style="overflow:hidden;width:100%;">
-            {% set recent_users = sidebar_recent_users(cnt=9) %}
+            {% set recent_users = sidebar_recent_users(lmt=9) %}
             {% for i in range(recent_users | length) %}
             {% set user = recent_users[i] %}
-                <div class="col-4 text-center mb-2">
+                <div class="col-4 text-center mb-2 w-auto">
                 <a href="{{ url_for('user.user_page', user_id=user.id) }}">
-                    <img src="{{ user.icon.url }}" alt="{{ user.nickname }}" style="width:80px;height:80px">
+                    <img src="{{ user.icon.url_px(64) }}" alt="{{ user.nickname }}" style="width:100%;height:auto;">
                 </a>
                 </div>
             {% endfor %}

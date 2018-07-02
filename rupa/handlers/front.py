@@ -23,12 +23,14 @@ front = Blueprint('front', __name__)
 def index():
     page = request.args.get('page', default=1, type=int)
     # 文章列表
-    pagination = Post.query.filter_by(_password=None, status=Post.STATUS_PUBLISHED).order_by(
+    pagination = Post.query.filter(Post._password == None,
+                                   Post._visibility == Post.VISIBILITY_OPTIONS['public'],
+                                   Post.status == Post.STATUS_PUBLISHED).order_by(
         Post.published_at.desc()).paginate(
-                                            page=page,
-                                            per_page=current_app.config['INDEX_PER_PAGE'],
-                                            error_out=False
-                                            )
+        page=page,
+        per_page=current_app.config['INDEX_PER_PAGE'],
+        error_out=False
+    )
 
     return render_template('index.html',
                            page=page,

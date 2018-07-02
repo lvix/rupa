@@ -11,6 +11,18 @@
 
 {% block body%}
 <div class="form_generic">
-{{ render_form(form, endpoint) }}
+    <form method="POST" action="{{ endpoint }}" enctype="multipart/form-data">
+        {{ render_general_field(form.title) }}
+        {{ render_general_field(form.description) }}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text">http://65535.me/blog/</div>
+            </div>
+            <input type="text" class="form-control" id="permanent_link" name="permanent_link" placeholder="永久链接"
+                   {% if current_user.blog and current_user.blog.permanent_link %}
+                   value="{{ current_user.blog.permanent_link }}"disabled{% endif %}>
+        </div>
+        {{ form.submit(class_='btn btn-primary btn-block', type='submit') }}
+    </form>
 </div>
 {% endblock %}

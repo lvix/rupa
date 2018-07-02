@@ -10,10 +10,10 @@
 
 from functools import wraps
 
-from flask import abort, redirect, url_for
+from flask import abort, redirect, url_for, request, flash
 from flask_login import current_user
 
-from rupa.models import User
+from rupa.models import User, Blog
 
 
 def roles_required(*roles):
@@ -49,6 +49,11 @@ def blog_required():
         def wrapper(*args, **kwargs):
             if current_user.blog is None:
                 return redirect(url_for('dashboard.blog_new'))
+            if current_user.blog.status == Blog.STATUS_SUSPENDED:
+                flash('你的博客已被封禁', 'danger')
+                return redirect(request.args.get('next') or
+                                request.referrer or
+                                url_for('front.index'))
             return func(*args, **kwargs)
         return wrapper
     return decorator

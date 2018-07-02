@@ -8,8 +8,12 @@
 {% endblock %}
 
 {% block main_content %}
-{{ render_index_post_list(pagination.items, moment) }}
-{{ render_pagination(pagination, endpoint, blog_id=blog.id) }}
+    {{ render_index_post_list(pagination.items, moment) }}
+    {% if endpoint == 'blog.blog_page_plink' %}
+        {{ render_pagination(pagination, endpoint, permanent_link=blog.permanent_link) }}
+    {% else %}
+        {{ render_pagination(pagination, endpoint, blog_id=blog.id) }}
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}

@@ -123,7 +123,7 @@ class RegisterForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
     nickname = StringField('昵称', validators=[DataRequired(message='用户名不可为空'),
-                                             Length(3, 20, message='长度应在3~20个字符之间'),
+                                             Length(2, 16, message='长度应在2~16个字符之间'),
                                              Regexp('^[^,<>;:\-=&%#@!~`\*\.\?\+\$\^\[\]\(\)\{\}\|\\\/]*$',
                                                     message='包含有奇怪的字符')])
     icon = FileField('上传头像')

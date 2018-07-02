@@ -118,3 +118,7 @@ a.teal-link>a:active {
     color: #00695C !important;
 }
 
+.teal-btn{
+border-radius: 0rem !important;
+border: 0px !important;
+}

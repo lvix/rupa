@@ -9,6 +9,7 @@
 """
 from flask import Blueprint, render_template, url_for, flash, current_app, redirect, request
 from flask_login import current_user
+from wtforms import ValidationError
 from rupa.decorators import roles_required, blog_required
 from rupa.models import db, User, Post, Blog, Notification, Message, Category, Album, Photo
 from rupa.forms import PostForm, CateForm, ProfileForm, BlogInfoForm, PostUploadForm
@@ -64,11 +65,12 @@ def blog_info():
     if request.method == 'GET':
         form.load_info()
     elif request.method == 'POST':
-        if form.validate_on_submit():
+        try:
+            form.validate_on_submit()
             form.update_info()
             flash('更新成功', 'success')
-        else:
-            flash('提交失败', 'danger')
+        except ValidationError as e:
+            flash('提交失败' + e, 'danger')
     return render_template('dashboard/blog_info.html',
                            user=current_user,
                            form=form, endpoint=url_for('dashboard.blog_info'),
@@ -152,7 +154,7 @@ def post_edit(post_id):
 
     target = Post.query.get_or_404(post_id)
     if target.blog.user != current_user:
-        return redirect('dashboard.index')
+        return redirect(url_for('dashboard.index'))
 
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -320,11 +322,11 @@ def category_edit(cate_id):
                            user=current_user, cate_id=cate_id)
 
 
-@dashboard.route('/<int:user_id>/profile_edit/', methods=['GET', 'POST'])
+@dashboard.route('/profile_edit/', methods=['GET', 'POST'])
 @roles_required(User.ROLE_USER)
 def profile_edit(user_id):
 
-    target = User.query.get_or_404(user_id)
+    target = current_user
     form = ProfileForm()
 
     if request.method == 'GET':

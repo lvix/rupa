@@ -8,7 +8,7 @@
 @time: 18/6/6 5:27
 """
 
-from flask import Blueprint, request, send_file, abort, render_template, flash, redirect
+from flask import Blueprint, request, send_file, abort, render_template, flash, redirect, url_for
 from flask_login import current_user
 from rupa.models import Photo, User, Icon, Album
 from rupa.decorators import roles_required

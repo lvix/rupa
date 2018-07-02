@@ -8,7 +8,8 @@
 @time: 18/5/10 14:45
 """
 
-from flask import Blueprint, url_for, render_template, redirect
+from flask import Blueprint, url_for, render_template, redirect, request, flash
+from flask_login import current_user
 from rupa.models import db, Post
 
 post = Blueprint('post', __name__, url_prefix='/post')
@@ -31,6 +32,16 @@ def post_page(post_id):
     :return: 无
     """
     target = Post.query.get_or_404(post_id)
+    # check permission
+    if (target.visibility == 'self_only' and current_user != target.blog.user) or (
+            target.visibility == 'member_only' and not current_user.is_authenticated) or (
+            target.visibility == 'author_only' and (
+            current_user != target.blog.user or current_user not in target.assist_writers)):
+        flash('没有查看文章的权限', 'secondary')
+        return redirect(url_for('front.index'))
+    elif target.visibility == 'need_password':
+        pass
+
     if target.permanent_link is not None:
         return redirect(url_for('post.post_page_permanent_link', permanent_link=target.permanent_link))
     target.views += 1
@@ -47,6 +58,18 @@ def post_page_permanent_link(permanent_link):
     :return: 无
     """
     target = Post.query.filter_by(permanent_link=permanent_link).first_or_404()
+    # check permission
+    if (target.visibility == 'self_only' and current_user != target.blog.user) or (
+            target.visibility == 'member_only' and not current_user.is_authenticated) or (
+            target.visibility == 'author_only' and (
+            current_user != target.blog.user or current_user not in target.assist_writers)):
+        flash('没有查看文章的权限', 'secondary')
+        return redirect(request.args.get('next') or
+                        request.referrer or
+                        url_for('front.index'))
+    elif target.visibility == 'need_password':
+        pass
+
     target.views += 1
     db.session.add(target)
     db.session.commit()

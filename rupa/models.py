@@ -202,7 +202,7 @@ class Blog(Base):
     title = db.Column(db.String(256), default='No Title')
     description = db.Column(db.String(256))
     password = db.Column(db.String(256))
-
+    permanent_link = db.Column(db.String(64), unique=True)
     status = db.Column(db.SmallInteger, default=STATUS_NORMAL)
 
     categories = db.relationship('Category', lazy='dynamic', backref=db.backref('blog'), cascade='all, delete-orphan')
@@ -281,21 +281,18 @@ class Post(Base):
         return self.VISIBILITY_OPTIONS_R.get(self._visibility, 0)
 
     @visibility.setter
-    def visibility(self, visibility):
+    def visibility(self, vi):
         """
             设置文章允许被所有人查看
             Args:
-                visibility(str):
-                    'public': 文章所有人可见
-                    'member_only': 仅会员登录后可见
-                    'author_only': 仅参与的作者可见
-                    'need_password': 输入密码后可见
-                    'self_only': 仅自己可见
+                vi(int): VISIBILITY_OPTIONS
             Returns:
                 None
         """
-        vi = self.VISIBILITY_OPTIONS.get(visibility, None)
-        if vi:
+        # vi = self.VISIBILITY_OPTIONS.get(visibility, None)
+        print(vi)
+        # if vi is not None:
+        if 5 > vi >= 0:
             self._visibility = vi
 
     @property
@@ -486,6 +483,13 @@ class Icon(Base):
         else:
             return url_for('static', filename='icon/default_icon.png')
 
+    def url_px(self, size=64):
+        if self.image_name:
+            return url_for('photo.icon_get',
+                           filename=self.image_name, size=size)
+        else:
+            return url_for('static', filename='icon/default_icon.png')
+
     def update_icon(self, field_data):
         """
         把表单中的 Field 数据写入自身的属性
@@ -521,7 +525,7 @@ class Icon(Base):
             img = img.crop((x0, y0, x1, y1))
 
             for size in sizes:
-                img = img.resize((size, size))
+                img = img.resize((size, size), Image.BICUBIC)
                 img_path = os.getcwd() + img_dir + img_name + 'x{}.png'.format(size)
                 img.save(img_path, 'png')
 

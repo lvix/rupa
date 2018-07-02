@@ -21,6 +21,8 @@
         {{ wrap_item('我的相册', url_for('photo.album_index'), 'info') }}
         {% if not current_user.blog %}
             {{ wrap_item('创建博客', url_for('dashboard.blog_new'), 'primary') }}
+        {% else %}
+            {{ wrap_item('博客信息', url_for('dashboard.blog_info'), 'primary') }}
         {% endif %}
     </div>
 </div>

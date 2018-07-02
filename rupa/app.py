@@ -65,15 +65,15 @@ def register_filters(app):
             return ''
 
     @app.template_global()
-    def sidebar_recent_users(cnt=10):
+    def sidebar_recent_users(lmt=9):
         # 最新用户
-        return User.query.filter_by(role=User.ROLE_USER).order_by(User.created_at).limit(cnt).all()
+        return User.query.filter_by(role=User.ROLE_USER).order_by(User.created_at.desc()).limit(lmt).all()
 
     @app.template_global()
     def sidebar_recent_posts(blog=None, lmt=10):
         # 最新文章
         if blog is None:
-            return Post.query.filter_by(_visibility=0).order_by(Post.published_at).limit(lmt).all()
+            return Post.query.filter_by(_visibility=0).order_by(Post.published_at.desc()).limit(lmt).all()
         else:
             return blog.posts.filter_by(_visibility=0).order_by(Post.published_at.desc()).limit(lmt).all()
 

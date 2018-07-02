@@ -106,13 +106,13 @@ class PostForm(FlaskForm):
                 post.permanent_link = permanent_link.lower().strip()
 
             # 处理可见性
-            post.visibility = self.visibility.data
+            post.visibility = int(self.visibility.data)
 
             # 处理Tags
             post.tags = []
             tags_str = self.tags.data.strip()
             tag_names = re.split(r'\s*[,，]\s*', tags_str)
-            print(tags_str, tag_names)
+            # print(tags_str, tag_names)
             if len(tag_names) > 0:
                 for tag_name in tag_names:
                     if len(tag_name) > 0:
@@ -138,6 +138,7 @@ class PostForm(FlaskForm):
             self.new_cate.data = ''
             db.session.add(post)
             db.session.commit()
+
             return post
         except Exception as e:
             print('Failed creating/updating post:')
@@ -155,7 +156,7 @@ class PostForm(FlaskForm):
             for cate in post.categories:
                 getattr(self, 'cate_' + cate.name).data = True
             self.permanent_link.data = post.permanent_link
-            self.visibility.data = post.visibility
+            self.visibility.data = str(post._visibility)
             self.abstract.data = post.abstract
 
             tags_str = ', '.join([tag.name for tag in post.tags])
