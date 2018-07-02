@@ -86,7 +86,7 @@ def register():
             flash('注册成功', 'success')
 
             login_user(new_user, 1)
-            return redirect(url_for('dashboard.profile_edit', user_id=new_user.id))
+            return redirect(url_for('dashboard.profile_edit'))
         else:
             flash('提交失败', 'secondary')
     elif request.method == 'GET':

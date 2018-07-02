@@ -324,7 +324,7 @@ def category_edit(cate_id):
 
 @dashboard.route('/profile_edit/', methods=['GET', 'POST'])
 @roles_required(User.ROLE_USER)
-def profile_edit(user_id):
+def profile_edit():
 
     target = current_user
     form = ProfileForm()

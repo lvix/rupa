@@ -9,7 +9,7 @@
             {% set user = recent_users[i] %}
                 <div class="col-4 text-center mb-2 w-auto">
                 <a href="{{ url_for('user.user_page', user_id=user.id) }}">
-                    <img src="{{ user.icon.url_px(64) }}" alt="{{ user.nickname }}" style="width:100%;height:auto;">
+                    <img src="{{ user.icon.url_px(128) }}" alt="{{ user.nickname }}" style="width:100%;height:auto;">
                 </a>
                 </div>
             {% endfor %}
@@ -63,7 +63,7 @@
 
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-center">
-            <img src="{{ user.icon.url }}" style="width:50%;height:50%;">
+            <img src="{{ user.icon.url }}" style="width:50%;height:auto;">
             </li>
             <li class="list-group-item text-center">
             <strong>{{user.nickname}}</strong>

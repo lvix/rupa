@@ -11,6 +11,10 @@
 {% if pagination %}
     {{ render_index_post_list(pagination.items, moment) }}
     {{ render_pagination(pagination, endpoint, user_id=user_id) }}
+{% else %}
+<div class="w-100 text-center">
+    <h4 class="lead">暂时没有文章</h4>
+</div>
 {% endif %}
 {% endblock %}
 
