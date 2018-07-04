@@ -44,46 +44,35 @@ class AdminUserForm(FlaskForm):
         根据自身的内容更新数据库相关记录
         :return: True False
         """
-        try:
-            if user is None:
-                user = User()
+        # try:
+        if user is None:
+            user = User()
+            user.password = self.password.data
+        else:
+            if len(self.password.data) > 0:
                 user.password = self.password.data
-            else:
-                if len(self.password.data) > 0:
-                    user.password = self.password.data
-            # user.username = self.username.data
-            user.nickname = self.nickname.data
-            user.role = self.role.data
-            user.status = self.status.data
-            # user.email = self.email.data
-            user.introduction = self.introduction.data
-            print(user)
-            db.session.add(user)
-            db.session.commit()
-            return user
-        except Exception as e:
-            db.session.rollback()
-            print('Failed creating/updating user info:')
-            print(e)
+
+        user.nickname = self.nickname.data
+        user.role = self.role.data
+        user.status = self.status.data
+
+        user.introduction = self.introduction.data
+
+        db.session.add(user)
+        db.session.commit()
+        return user
 
     def load_user(self, user):
         """
         从数据库中加载用户信息到表单
-        :param cate: 分类数据库对象
+        :param user: User数据库对象
         :return: 成功返回 True， 否则返回 False
         """
-        try:
-            # self.username.data = user.username
-            self.nickname.data = user.nickname
-            self.role.data = user.role
-            self.status.data = user.status
-            # self.email.data = user.email
-            self.introduction.data = user.introduction
-            return True
-        except Exception as e:
-            print('Failed loading user info：')
-            print(e)
-            return False
+        self.nickname.data = user.nickname
+        self.role.data = user.role
+        self.status.data = user.status
+
+        self.introduction.data = user.introduction
 
 
 class AdminNewUserForm(AdminUserForm):
@@ -113,27 +102,23 @@ class AdminNewUserForm(AdminUserForm):
         根据自身的内容更新数据库相关记录
         :return: True False
         """
-        try:
-            if user is None:
-                user = User()
+        if user is None:
+            user = User()
+            user.password = self.password.data
+        else:
+            if len(self.password.data) > 0:
                 user.password = self.password.data
-            else:
-                if len(self.password.data) > 0:
-                    user.password = self.password.data
-            user.username = self.username.data
-            user.nickname = self.nickname.data
-            user.role = self.role.data
-            user.status = self.status.data
-            user.email = self.email.data
-            user.introduction = self.introduction.data
-            print(user)
-            db.session.add(user)
-            db.session.commit()
-            return user
-        except Exception as e:
-            db.session.rollback()
-            print('Failed creating/updating user info:')
-            print(e)
+        user.username = self.username.data
+        user.nickname = self.nickname.data
+        user.role = self.role.data
+        user.status = self.status.data
+        user.email = self.email.data
+        user.introduction = self.introduction.data
+
+        db.session.add(user)
+        db.session.commit()
+        return user
+
 
     def load_user(self, user):
         """
@@ -141,15 +126,9 @@ class AdminNewUserForm(AdminUserForm):
         :param cate: 分类数据库对象
         :return:
         """
-        try:
-            self.username.data = user.username
-            self.nickname.data = user.nickname
-            self.role.data = user.role
-            self.status.data = user.status
-            self.email.data = user.email
-            self.introduction.data = user.introduction
-            return True
-        except Exception as e:
-            print('Failed loading user info：')
-            print(e)
-            return False
+        self.username.data = user.username
+        self.nickname.data = user.nickname
+        self.role.data = user.role
+        self.status.data = user.status
+        self.email.data = user.email
+        self.introduction.data = user.introduction

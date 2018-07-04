@@ -70,7 +70,7 @@ def blog_info():
             form.update_info()
             flash('更新成功', 'success')
         except ValidationError as e:
-            flash('提交失败' + e, 'danger')
+            flash('提交失败', 'danger')
     return render_template('dashboard/blog_info.html',
                            user=current_user,
                            form=form, endpoint=url_for('dashboard.blog_info'),
@@ -101,26 +101,19 @@ def post():
 def post_new():
     form = gen_dynamic_form()
     if request.method == 'POST':
-        if form.validate_on_submit():
-            if current_user.status == User.STATUS_NORMAL and current_user.blog.status == Blog.STATUS_NORMAL:
-                try:
-
-                    target = form.update_post()
-                    flash('发表成功', 'success')
-                    return redirect(url_for('dashboard.post_edit', post_id=target.id))
-                except Exception as e:
-                    print(e)
-                    flash('提交失败', 'danger')
-                    db.session.rollback()
-                    return render_template('dashboard/post_new.html', form=form)
-            else:
-                flash('现在无法发表', 'danger')
-                return render_template('dashboard/post_new.html', form=form)
+        if form.validate_on_submit() and current_user.status == User.STATUS_NORMAL and current_user.blog.status == Blog.STATUS_NORMAL:
+            try:
+                target = form.update_post()
+                flash('发表成功', 'success')
+                return redirect(url_for('dashboard.post_edit', post_id=target.id))
+            except Exception as e:
+                flash('提交失败', 'danger')
+                db.session.rollback()
         else:
             flash('发表失败', 'danger')
-            return render_template('dashboard/post_new.html', form=form)
     elif request.method == 'GET':
-        return render_template('dashboard/post_new.html', form=form)
+        pass
+    return render_template('dashboard/post_new.html', form=form)
 
 
 @dashboard.route('/post/delete/<int:post_id>', methods=['GET'])
@@ -170,24 +163,13 @@ def post_edit(post_id):
                     form = gen_dynamic_form()
                     form.load_post(target)
                     form.new_cate.data = ''
-                    return render_template('dashboard/post_edit.html', form=form, post_id=target.id)
                 except Exception as e:
-                    print(e)
                     flash('提交失败', 'danger')
                     db.session.rollback()
-                    return render_template('dashboard/post_edit.html', form=form, post_id=post_id)
             else:
                 flash('现在无法发表', 'danger')
-                return render_template('dashboard/post_edit.html', form=form, post_id=post_id)
         else:
-            # print('验证失败')
-            for field in form:
-                if field.errors:
-                    for error in field.errors:
-                        print(error)
             flash('提交失败', 'danger')
-            return render_template('dashboard/post_edit.html', form=form, post_id=post_id)
-
     elif request.method == 'GET':
         form.load_post(target)
     return render_template('dashboard/post_edit.html', form=form, post_id=post_id)
@@ -234,11 +216,6 @@ def post_upload():
                 flash('上传失败', 'danger')
         else:
             flash('上传失败', 'danger')
-            # for field in form:
-            #     if field.errors:
-            #         print(field)
-            #         for e in field.errors:
-            #             print(e)
     return render_template('dashboard/post_upload.html', form=form, file_accept='.md')
 
 
@@ -339,11 +316,6 @@ def profile_edit():
                 flash('更新失败', 'danger')
         else:
             flash('更新失败', 'danger')
-            # for field in form:
-            #     if field.errors:
-            #         print(field)
-            #         for e in field.errors:
-            #             print(e)
     return render_template('dashboard/profile_edit.html', form=form)
 
 

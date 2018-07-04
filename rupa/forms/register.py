@@ -117,8 +117,6 @@ class RegisterForm(FlaskForm):
             return new_user
         except Exception as e:
             db.session.rollback()
-            print(e)
-            return
 
 
 class ProfileForm(FlaskForm):
@@ -149,28 +147,22 @@ class ProfileForm(FlaskForm):
         self.country.data = user.country
         self.province.data = user.province
         self.city.data = user.city
-        # self.icon_url = url_for('static', filename='icon/default_icon.png')
-        # if user.icon is not None:
-        #     self.icon_url = user.icon.url_thumb
+
 
     def update_info(self, user):
-        try:
-            user.nickname = self.nickname.data
-            user.introduction = self.introduction.data
-            # print(self.gender.data)
-            user.gender = int(self.gender.data)
-            user.country = self.country.data
-            user.province = self.province.data
-            user.city = self.city.data
-            db.session.add(user)
-            db.session.commit()
 
-            if self.icon.data:
-                icon = user.icon
-                if user.icon is None:
-                    icon = Icon(user=user)
-                icon.update_icon(self.icon.data)
-            return True
-        except Exception as e:
-            db.session.rollback()
-            raise e
+        user.nickname = self.nickname.data
+        user.introduction = self.introduction.data
+        # print(self.gender.data)
+        user.gender = int(self.gender.data)
+        user.country = self.country.data
+        user.province = self.province.data
+        user.city = self.city.data
+        db.session.add(user)
+        db.session.commit()
+
+        if self.icon.data:
+            icon = user.icon
+            if user.icon is None:
+                icon = Icon(user=user)
+            icon.update_icon(self.icon.data)

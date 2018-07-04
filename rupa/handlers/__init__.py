@@ -7,3 +7,4 @@ from .dashboard import dashboard
 from .admin import admin
 from .blog import blog
 from .photo import photo
+from .error import page_not_found, internal_error, page_forbidden

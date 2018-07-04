@@ -14,7 +14,7 @@ from rupa.models import db, Category, Post
 category = Blueprint('category', __name__, url_prefix='/category')
 
 
-@category.route('/<int:category_id>')
+@category.route('/<int:category_id>/')
 def category_page(category_id):
     """
     分类的文章列表

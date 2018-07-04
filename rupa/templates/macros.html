@@ -154,9 +154,10 @@
 {% endmacro %}
 
 {%- macro render_pagination(pagination, endpoint) %}
+{% if pagination.pages > 1%}
 <div class="text-center text-monospace mt-5 pt-5">
     <div class="d-flex flex-row">
-        <a {%- if pagination.has_prev %}
+        <a {% if pagination.has_prev %}
            href="{{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}"
            {% endif %}
            aria-label="Previous" class="teal-pagination text-center mr-3">
@@ -188,14 +189,15 @@
 
         {% endfor %}
 
-        <a {%- if pagination.has_next %}
+        <a {% if pagination.has_next %}
            href="{{ url_for(endpoint, page=pagination.page + 1, **kwargs) }}"
-           {% endif -%}
-           aria-label="Next" class="teal-pagination text-center mr-3">
+           {% endif %}
+           class="teal-pagination text-center mr-3" aria-label="Next">
             <div class="teal-pagination-page">&raquo;</div>
         </a>
     </div>
 </div>
+{% endif %}
 {%- endmacro %}
 
 {%- macro render_post_info(p, moment) %}

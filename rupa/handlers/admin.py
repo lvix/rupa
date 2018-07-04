@@ -48,8 +48,6 @@ def user_edit(user_id):
         form.load_user(user)
         return render_template('admin/user_edit.html', form=form, user=user)
     elif request.method == 'POST':
-        # form.username.data = user.username
-        # form.email.data = user.email
         if form.validate_on_submit():
             try:
                 form.update_user(user)
@@ -57,12 +55,6 @@ def user_edit(user_id):
             except Exception as e:
                 flash('用户信息更新失败', 'danger')
                 print(e)
-        else:
-            for field in form:
-                if field.errors:
-                    print(field)
-                    for error in field.errors:
-                        print(error)
         return render_template('admin/user_edit.html', form=form, user=user)
 
 
@@ -139,6 +131,7 @@ def post_delete(post_id):
 def invitation_codes():
     return render_list(InvitationCode, InvitationCode.created_at, 'admin.invitation_codes', 'admin/invitation_list.html')
 
+
 @admin.route('/invitation_codes/delete/<code_id>')
 @roles_required(User.ROLE_ADMIN)
 def invitation_codes_delete(code_id):
@@ -166,8 +159,15 @@ def invitation_codes_gen():
                     url_for('admin.index'))
 
 
-
 def render_list(db_obj, order_attr, endpoint, template):
+    """
+    view 对象渲染列表的一个快速通用函数
+    :param db_obj: 数据库对象
+    :param order_attr: 排序依据的属性
+    :param endpoint: 页码所需要的 endpoint
+    :param template: 最终渲染的进价jinja2模板
+    :return: render_template 产生的结果
+    """
     page = request.args.get('page', default=1, type=int)
     pagination = db_obj.query.order_by(order_attr.desc()).paginate(
         page=page,
@@ -183,16 +183,22 @@ def render_list(db_obj, order_attr, endpoint, template):
 
 
 def delete_target(db_obj, target_id, flash_word=''):
+    """
+
+    :param db_obj:
+    :param target_id:
+    :param flash_word:
+    :return:
+    """
     target = db_obj.query.get_or_404(target_id)
-    print(target)
+    # print(target)
     try:
         db.session.delete(target)
         db.session.commit()
-        flash('删除{} {} 成功'.format(flash_word, target_id), 'success')
+        flash('删除 {} id={} 成功'.format(flash_word, target_id), 'success')
     except Exception as e:
-        print(e)
         db.session.rollback()
-        flash('删除{} {}失败'.format(flash_word, target_id), 'danger')
+        flash('删除 {} id={} 失败'.format(flash_word, target_id), 'danger')
     return redirect(request.args.get('next') or
                     request.referrer or
                     url_for('admin.index'))

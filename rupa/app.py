@@ -115,6 +115,13 @@ def register_blueprints(app):
     app.register_blueprint(photo)
 
 
+def register_error_handlers(app):
+    from .handlers import page_forbidden, page_not_found, internal_error
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(403, page_forbidden)
+    app.register_error_handler(500, internal_error)
+
+
 def create_app(config):
     """
     Args: 
@@ -124,6 +131,7 @@ def create_app(config):
     app.config.from_object(configs.get(config))
     register_extensions(app)
     register_blueprints(app)
+    register_error_handlers(app)
     register_filters(app)
 
     return app 
