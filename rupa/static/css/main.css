@@ -89,6 +89,13 @@ blockquote p {
 .bg-teal-500{
 background-color:#009688 !important;
 }
+.bg-teal-700{
+background-color:#00796B !important;
+}
+.bg-teal-800{
+background-color:#00695C !important;
+}
+
 
 .bd-teal-700{
 border-color:#00796B !important;

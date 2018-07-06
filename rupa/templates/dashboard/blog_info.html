@@ -12,6 +12,7 @@
 {% block body%}
 <div class="form_generic">
     <form method="POST" action="{{ endpoint }}" enctype="multipart/form-data">
+        {{ form.csrf_token }}
         {{ render_general_field(form.title) }}
         {{ render_general_field(form.description) }}
         <div class="input-group mb-3">

@@ -51,6 +51,10 @@ def blog_new():
             return redirect(url_for('dashboard.post_new'))
         else:
             flash('创建失败', 'danger')
+            for field in form:
+                if field.errors:
+                    for err in field.errors:
+                        print(err)
     return render_template('dashboard/blog_info.html',
                            user=current_user,
                            form=form, endpoint=url_for('dashboard.blog_new'),
