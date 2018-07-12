@@ -148,3 +148,12 @@ border: 0px !important;
 .teal-pagination-page{
 
 }
+
+.blockquote
+{
+font-size: 1rem;
+}
+
+code{
+margin: 1.5em 10px
+}
