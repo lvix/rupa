@@ -1,5 +1,5 @@
 {% macro render_recent_users() %}
-    <div class="sidebar_card shadow mb-5" style="">
+    <div class="sidebar_card shadow-sm mb-5" style="height:320px;background-color:#fff;">
         <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
             <h5 class="text-white">新加入用户</h5>
         </div>
@@ -8,7 +8,7 @@
             {% for i in range(recent_users | length) %}
             {% set user = recent_users[i] %}
                 <div class="col-4 text-center mb-2 w-auto">
-                <a href="{{ url_for('user.user_page', user_id=user.id) }}">
+                <a href="{{ url_for('user.user_page', user_id=user.id) }}" alt="{{ user.nickname }}">
                     <img src="{{ user.icon.url_px(128) }}" alt="{{ user.nickname }}" style="width:100%;height:auto;">
                 </a>
                 </div>
@@ -18,7 +18,7 @@
 {% endmacro %}
 
 {% macro render_recent_posts(blog=None) %}
-    <div class="sidebar_card shadow mb-5" style="">
+    <div class="sidebar_card shadow-sm mb-5" style="">
         <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
             <h5 class="text-white">最新文章</h5>
         </div>
@@ -36,7 +36,7 @@
 {% endmacro %}
 
 {% macro render_blog_categories(blog) %}
-    <div class="sidebar_card shadow mb-5" style="">
+    <div class="sidebar_card shadow-sm mb-5" style="">
         <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
             <h5 class="text-white">文章分类</h5>
         </div>
@@ -54,7 +54,7 @@
 {% endmacro %}
 
 {% macro render_user_info(user) %}
-    <div class="sidebar_card shadow mb-5" style="">
+    <div class="sidebar_card shadow-sm mb-5" style="">
         <div class="sidebar_card_header pt-3 pb-2 px-4 bg-teal-500">
             <h5 class="text-white">个人信息</h5>
         </div>

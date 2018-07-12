@@ -13,6 +13,7 @@ from flask_login import LoginManager
 moment = Moment()
 pagedown = PageDown()
 
+
 def register_filters(app):
     @app.template_filter()
     def simple_html_parser(text):
@@ -36,6 +37,8 @@ def register_filters(app):
         返回值为
         '一二三四五六七八九十……'
         """
+        if long_string is None:
+            return ''
         if len(long_string) > max_length:
             return long_string[:max_length-2] + '…'
         else:
@@ -83,7 +86,6 @@ def register_filters(app):
             return blog.categories.order_by(Category.created_at).all()
 
 
-
 def register_extensions(app):
     db.init_app(app)
     moment.init_app(app)
@@ -116,9 +118,10 @@ def register_blueprints(app):
 
 
 def register_error_handlers(app):
-    from .handlers import page_forbidden, page_not_found, internal_error
+    from .handlers import page_forbidden, page_not_found, internal_error, request_size_error
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(403, page_forbidden)
+    app.register_error_handler(413, request_size_error)
     app.register_error_handler(500, internal_error)
 
 

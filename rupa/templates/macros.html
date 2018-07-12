@@ -64,7 +64,7 @@
 {% endmacro %}
 
 {% macro render_post_card_2(post, moment) %}
-<div class="shadow mb-5 bg-white" style="height:320px;overflow:hidden;">
+<div class="shadow-sm mb-5 bg-white" style="height:320px;overflow:hidden;">
     <div class="d-flex" style="width:100%;height:100%;">
         <div class="row no-gutters w-100 pl-4 pt-4" style="height:100%">
             <div class="col-12 align-items-start" style="overflow:hidden;height:15%;">
@@ -80,8 +80,11 @@
             <div class="col-12 d-flex flex-row" style="overflow:hidden;height:15%;">
                 <div class="p-2"><img src="{{ post.blog.user.icon.url }}" class="rounded float-left post_card_icon"
                                       alt="{{ post.blog.user.nickname }}"></div>
-                <div class="p-2"><strong>{{ post.blog.user.nickname}}</strong></div>
-                <div class="p-2"><strong>{{ moment(post.published_at).format('YYYY-M-D') }}</strong></div>
+                <div class="p-2">
+                    <a href="{{ url_for('user.user_page', user_id=post.blog.user.id) }}" class="teal-link">
+                        {{ post.blog.user.nickname}}</a>
+                </div>
+                <div class="p-2">{{ moment(post.published_at).format('YYYY-M-D') }}</div>
             </div>
 
             <div class="col-12 pr-4" style="overflow:hidden;height:55%">
@@ -117,7 +120,7 @@
 
 {%- macro render_pagination(pagination, endpoint) %}
 {% if pagination.pages > 1%}
-<div class="text-center text-monospace mt-5 pt-5">
+<div class="text-center text-monospace mt-5">
     <div class="d-flex flex-row">
         <a {% if pagination.has_prev %}
            href="{{ url_for(endpoint, page=pagination.page - 1, **kwargs) }}"

@@ -22,3 +22,7 @@ def page_forbidden(e):
 def internal_error(e):
     return render_template('error.html', code=500), 500
 
+
+def request_size_error(e):
+    return render_template('error.html', code=413), 413
+

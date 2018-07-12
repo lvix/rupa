@@ -314,9 +314,10 @@ def profile_edit():
         form.load_info(target)
     elif request.method == 'POST':
         if form.validate_on_submit():
-            if form.update_info(target):
+            try:
+                form.update_info(target)
                 flash('更新成功', 'success')
-            else:
+            except:
                 flash('更新失败', 'danger')
         else:
             flash('更新失败', 'danger')
