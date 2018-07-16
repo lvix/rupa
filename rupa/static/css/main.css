@@ -157,3 +157,34 @@ font-size: 1rem;
 code{
 margin: 1.5em 10px
 }
+
+.post_text ul, .md_preview ul {
+list-style: none;
+padding-left: 20px;
+}
+
+.post_text ul li::before, .md_preview ul li::before {
+color: #009688;
+content:'▮';
+}
+
+.post_text ol, .md_preview ol {
+list-style: none;
+counter-reset: li;
+padding-left: 20px;
+}
+
+.post_text ol li, .md_preview ol li{
+counter-increment: li;
+}
+
+.post_text ol li::before, .md_preview ol li::before{
+content: counter(li);
+color: #009688;
+display: inline-block;
+width: 1em;
+margin-left: -1.5em;
+margin-right: 0.5em;
+text-align: right;
+direction: rtl;
+}

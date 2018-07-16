@@ -8,7 +8,7 @@ from flask_migrate import Migrate, MigrateCommand
 
 import os
 
-rupa_config = os.environ.get('RUPA_CONFIG')
+rupa_config = os.environ.get('FLASK_ENV')
 # if rupa_config is None:
 #     rupa_config = 'development'
 
